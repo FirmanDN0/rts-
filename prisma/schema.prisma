@@ -1,0 +1,142 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String   // Hashed password
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Portfolio {
+  id           String   @id @default(uuid())
+  title        String
+  thumbnailUrl String
+  videoUrl     String   // Showreel/Video Link (Vimeo/YouTube or direct)
+  description  String
+  category     String   // Film Production, Animation, Motion Graphic, Creative Visual
+  year         String
+  featured     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  name        String   // Film Production, Animation, Creative Visual
+  description String
+  basePrice   Float    // Base price in IDR
+  imageUrl    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Consultation {
+  id                 String   @id @default(uuid())
+  trackingCode       String   @unique // RTS-YYYY-XXXX
+  clientName         String
+  clientWhatsapp     String
+  clientEmail        String?
+  serviceType        String   // Film, Animation, Motion Graphic
+  duration           String   // Cepat, Normal, Kompleks
+  location           String   // Studio RTS, Lokasi client, Luar kota
+  talent             Boolean  @default(false)
+  equipment          Boolean  @default(false)
+  specialRequest     String?
+  estimatedPriceMin  Float
+  estimatedPriceMax  Float
+  negotiatedPrice    Float?   // Adjusted by Admin
+  status             String   // PENDING, REVIEW, NEGOTIATION, APPROVED, COMPLETED
+  notes              String?  // Admin internal notes
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // New Smart Pricing Fields
+  consultationType   String?  // CP or CA
+  serviceRole        String?  // Videographer, Photographer, Editor
+  productionType     String?  // Company Profile, Commercial Video, etc.
+  durationHours      Float?
+  optionsJson        String?  // raw details
+  calculationJson    String?  // breakdown details
+}
+
+model Offer {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Equipment {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  category      String   // Kamera, Mic, Gimbal, Lighting, Tripod, Laptop, Reflektor, Mini Lighting
+  provider      String   // Favian, Rico, Rahardian, Rayyan, etc.
+  purchasePrice Float
+  targetBep     Float    // Target BEP in hours
+  pricePerHour  Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Labor {
+  id             String   @id @default(uuid())
+  role           String   @unique // Fotografer, Videografer, Desainer, Editor, Animator, Crew, Talent Internal, Talent External, Drone Pilot, Admin, Tenaga Pemateri
+  priceRingan    Float
+  priceMenengah  Float
+  priceBesar     Float
+  chargeRingan   Float
+  chargeMenengah Float
+  chargeBesar    Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model DevelopmentScoreOption {
+  id          String   @id @default(uuid())
+  parameter   String   // Durasi Proyek, Jumlah Output, Durasi Output, Kompleksitas Konsep, Kebutuhan Crew, Tingkat Teknis, Rintangan Lokasi, Tekanan Deadline, Person
+  optionLabel String   // e.g. < 12 jam
+  score       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DevelopmentCategory {
+  id               String   @id @default(uuid())
+  category         String   @unique // Proyek Ringan, Proyek Menengah, Proyek Besar
+  minScore         Int
+  maxScore         Int
+  pricePerScore    Float    // 2000, 5000, 10000
+  profitPercentage Float    // 0.10, 0.15, 0.30
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model VariableCost {
+  id        String   @id @default(uuid())
+  name      String   @unique // Akomodasi Sidoarjo, Akomodasi Luar Sidoarjo
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContentAssetPrice {
+  id        String   @id @default(uuid())
+  category  String   // Desain Grafis, Editing Video
+  name      String   @unique // Media Dokumen & Cetak Polos, Media Informasi & Promosi, etc.
+  priceMin  Float
+  priceMax  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
