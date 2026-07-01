@@ -188,7 +188,7 @@ export default function PricingDashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
           <h1 className="font-serif text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <Coins className="w-8 h-8 text-[#0033A0]" />
+            <Coins className="w-8 h-8 text-[#2F3A8F]" />
             <span>Master Pricing & Cost Structure</span>
           </h1>
           <p className="text-slate-500 text-sm mt-1">
@@ -240,7 +240,7 @@ export default function PricingDashboard() {
               }}
               className={`flex items-center space-x-2 px-4 py-2.5 rounded-md text-xs font-bold transition-all duration-300 ${
                 activeTab === tab.id
-                  ? 'bg-[#0033A0] text-white shadow-sm'
+                  ? 'bg-[#2F3A8F] text-white shadow-sm'
                   : 'text-slate-500 hover:text-slate-800'
               }`}
             >
@@ -254,7 +254,7 @@ export default function PricingDashboard() {
       {/* Content Tabs */}
       {loading ? (
         <div className="py-24 text-center space-y-4">
-          <RefreshCw className="w-8 h-8 animate-spin text-[#0033A0] mx-auto" />
+          <RefreshCw className="w-8 h-8 animate-spin text-[#2F3A8F] mx-auto" />
           <p className="text-slate-400 text-xs font-light">Sedang memuat data pricing...</p>
         </div>
       ) : (
@@ -270,7 +270,7 @@ export default function PricingDashboard() {
                 </div>
                 <button
                   onClick={() => setShowAddForm(!showAddForm)}
-                  className="bg-[#0033A0] hover:bg-[#002D9C] text-white font-bold text-xs tracking-wider px-4 py-2.5 rounded flex items-center space-x-1.5 transition-colors"
+                  className="bg-[#2F3A8F] hover:bg-[#1E255C] text-white font-bold text-xs tracking-wider px-4 py-2.5 rounded flex items-center space-x-1.5 transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Tambah Alat</span>
@@ -356,7 +356,7 @@ export default function PricingDashboard() {
                     <button
                       onClick={() => handleCreate('equipment', newEquipment)}
                       disabled={saving}
-                      className="bg-[#0033A0] text-white font-bold px-4 py-2 rounded text-xs"
+                      className="bg-[#2F3A8F] text-white font-bold px-4 py-2 rounded text-xs"
                     >
                       {saving ? 'Menyimpan...' : 'Simpan Alat'}
                     </button>
@@ -475,7 +475,7 @@ export default function PricingDashboard() {
                               <div className="flex justify-end space-x-1.5">
                                 <button
                                   onClick={() => setEditingItem({ ...eq, type: 'equipment' })}
-                                  className="text-[#0033A0] hover:text-[#002D9C] p-1.5 hover:bg-blue-50 rounded"
+                                  className="text-[#2F3A8F] hover:text-[#1E255C] p-1.5 hover:bg-blue-50 rounded"
                                 >
                                   <Edit2 size={14} />
                                 </button>
@@ -543,13 +543,13 @@ export default function PricingDashboard() {
                               formatIDR(lab.priceRingan)
                             )}
                           </td>
-                          <td className="p-4 font-semibold text-[#0033A0]">
+                          <td className="p-4 font-semibold text-[#2F3A8F]">
                             {isEditing ? (
                               <input
                                 type="number"
                                 value={editingItem.chargeRingan}
                                 onChange={(e) => setEditingItem({ ...editingItem, chargeRingan: Number(e.target.value) })}
-                                className="border border-gray-200 rounded px-1.5 py-1 text-xs w-20 text-[#0033A0] font-semibold"
+                                className="border border-gray-200 rounded px-1.5 py-1 text-xs w-20 text-[#2F3A8F] font-semibold"
                               />
                             ) : (
                               formatIDR(lab.chargeRingan)
@@ -573,13 +573,13 @@ export default function PricingDashboard() {
                               formatIDR(lab.priceMenengah)
                             )}
                           </td>
-                          <td className="p-4 font-semibold text-[#0033A0]">
+                          <td className="p-4 font-semibold text-[#2F3A8F]">
                             {isEditing ? (
                               <input
                                 type="number"
                                 value={editingItem.chargeMenengah}
                                 onChange={(e) => setEditingItem({ ...editingItem, chargeMenengah: Number(e.target.value) })}
-                                className="border border-gray-200 rounded px-1.5 py-1 text-xs w-20 text-[#0033A0] font-semibold"
+                                className="border border-gray-200 rounded px-1.5 py-1 text-xs w-20 text-[#2F3A8F] font-semibold"
                               />
                             ) : (
                               formatIDR(lab.chargeMenengah)
@@ -603,13 +603,13 @@ export default function PricingDashboard() {
                               formatIDR(lab.priceBesar)
                             )}
                           </td>
-                          <td className="p-4 font-semibold text-[#0033A0]">
+                          <td className="p-4 font-semibold text-[#2F3A8F]">
                             {isEditing ? (
                               <input
                                 type="number"
                                 value={editingItem.chargeBesar}
                                 onChange={(e) => setEditingItem({ ...editingItem, chargeBesar: Number(e.target.value) })}
-                                className="border border-gray-200 rounded px-1.5 py-1 text-xs w-20 text-[#0033A0] font-semibold"
+                                className="border border-gray-200 rounded px-1.5 py-1 text-xs w-20 text-[#2F3A8F] font-semibold"
                               />
                             ) : (
                               formatIDR(lab.chargeBesar)
@@ -635,7 +635,7 @@ export default function PricingDashboard() {
                             ) : (
                               <button
                                 onClick={() => setEditingItem({ ...lab, type: 'labor' })}
-                                className="text-[#0033A0] hover:text-[#002D9C] p-1.5 hover:bg-blue-50 rounded"
+                                className="text-[#2F3A8F] hover:text-[#1E255C] p-1.5 hover:bg-blue-50 rounded"
                               >
                                 <Edit2 size={14} />
                               </button>
@@ -717,7 +717,7 @@ export default function PricingDashboard() {
                             ) : (
                               <button
                                 onClick={() => setEditingItem({ ...opt, type: 'options' })}
-                                className="text-[#0033A0] hover:text-[#002D9C] p-1.5 hover:bg-blue-50 rounded"
+                                className="text-[#2F3A8F] hover:text-[#1E255C] p-1.5 hover:bg-blue-50 rounded"
                               >
                                 <Edit2 size={14} />
                               </button>
@@ -794,14 +794,14 @@ export default function PricingDashboard() {
                               `${formatIDR(cat.pricePerScore)} / score`
                             )}
                           </td>
-                          <td className="p-4 font-bold text-[#0033A0]">
+                          <td className="p-4 font-bold text-[#2F3A8F]">
                             {isEditing ? (
                               <input
                                 type="number"
                                 step={0.01}
                                 value={editingItem.profitPercentage}
                                 onChange={(e) => setEditingItem({ ...editingItem, profitPercentage: Number(e.target.value) })}
-                                className="border border-gray-200 rounded px-2 py-1 text-xs w-24 text-[#0033A0] font-bold"
+                                className="border border-gray-200 rounded px-2 py-1 text-xs w-24 text-[#2F3A8F] font-bold"
                               />
                             ) : (
                               `${Math.round(cat.profitPercentage * 100)}%`
@@ -826,7 +826,7 @@ export default function PricingDashboard() {
                             ) : (
                               <button
                                 onClick={() => setEditingItem({ ...cat, type: 'categories' })}
-                                className="text-[#0033A0] hover:text-[#002D9C] p-1.5 hover:bg-blue-50 rounded"
+                                className="text-[#2F3A8F] hover:text-[#1E255C] p-1.5 hover:bg-blue-50 rounded"
                               >
                                 <Edit2 size={14} />
                               </button>
@@ -895,7 +895,7 @@ export default function PricingDashboard() {
                             ) : (
                               <button
                                 onClick={() => setEditingItem({ ...vc, type: 'variable' })}
-                                className="text-[#0033A0] hover:text-[#002D9C] p-1.5 hover:bg-blue-50 rounded"
+                                className="text-[#2F3A8F] hover:text-[#1E255C] p-1.5 hover:bg-blue-50 rounded"
                               >
                                 <Edit2 size={14} />
                               </button>
@@ -920,7 +920,7 @@ export default function PricingDashboard() {
                 </div>
                 <button
                   onClick={() => setShowAddForm(!showAddForm)}
-                  className="bg-[#0033A0] hover:bg-[#002D9C] text-white font-bold text-xs tracking-wider px-4 py-2.5 rounded flex items-center space-x-1.5 transition-colors"
+                  className="bg-[#2F3A8F] hover:bg-[#1E255C] text-white font-bold text-xs tracking-wider px-4 py-2.5 rounded flex items-center space-x-1.5 transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Tambah Asset</span>
@@ -981,7 +981,7 @@ export default function PricingDashboard() {
                     <button
                       onClick={() => handleCreate('asset', newAsset)}
                       disabled={saving}
-                      className="bg-[#0033A0] text-white font-bold px-4 py-2 rounded text-xs"
+                      className="bg-[#2F3A8F] text-white font-bold px-4 py-2 rounded text-xs"
                     >
                       {saving ? 'Menyimpan...' : 'Simpan Asset'}
                     </button>
@@ -1074,7 +1074,7 @@ export default function PricingDashboard() {
                               <div className="flex justify-end space-x-1.5">
                                 <button
                                   onClick={() => setEditingItem({ ...asset, type: 'assets' })}
-                                  className="text-[#0033A0] hover:text-[#002D9C] p-1.5 hover:bg-blue-50 rounded"
+                                  className="text-[#2F3A8F] hover:text-[#1E255C] p-1.5 hover:bg-blue-50 rounded"
                                 >
                                   <Edit2 size={14} />
                                 </button>

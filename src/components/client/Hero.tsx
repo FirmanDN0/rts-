@@ -1,70 +1,79 @@
 'use client';
 
 import { Play, ArrowRight } from 'lucide-react';
+import { DotGrid, ContourLines, OrganicBlob } from './Decorations';
 
 export default function Hero() {
   return (
-    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#F9FAFB]">
-      {/* Background Video */}
+    <section className="relative h-screen w-full flex items-center justify-start overflow-hidden bg-[#0B0E26] text-white">
+      {/* Background Video & Glowing Overlays */}
       <div className="absolute inset-0 w-full h-full z-0 pointer-events-none select-none overflow-hidden">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="w-full h-full object-cover scale-105 opacity-20 brightness-105 contrast-95"
+          className="w-full h-full object-cover scale-105 opacity-10 brightness-75 contrast-100"
         >
           <source
             src="https://assets.mixkit.co/videos/preview/mixkit-recording-a-cinematic-scene-with-a-professional-camera-40280-large.mp4"
             type="video/mp4"
           />
         </video>
-        {/* Soft light overlays transitioning to white theme background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#F9FAFB] via-[#F9FAFB]/70 to-[#F9FAFB]/90" />
-        <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#F9FAFB]/20 to-[#F9FAFB]" />
+        
+        {/* Dark Blue Base Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0F1E5C] via-[#0B0E26] to-[#080B1E]" />
       </div>
 
-      {/* Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center flex flex-col items-center">
-        <div className="inline-flex items-center space-x-2 border border-[#0033A0]/30 bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full mb-8 animate-fade-in shadow-sm">
-          <span className="w-2 h-2 rounded-full bg-[#0033A0] animate-ping" />
-          <span className="text-[11px] uppercase tracking-[0.25em] text-[#0033A0] font-bold">
-            Rencana Tuhan Studio
-          </span>
-        </div>
+      {/* Decorative Brand Patterns & Geometries matching mockup */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Large Yellow Arc on the Right */}
+        <div className="absolute -right-32 md:-right-48 -top-10 w-[450px] h-[450px] md:w-[800px] md:h-[800px] rounded-full bg-[#F2B705] z-0" />
+        
+        {/* Overlapping Dark Navy Shape creating the organic curve */}
+        <div className="absolute -right-32 md:-right-52 -bottom-20 w-[400px] h-[400px] md:w-[750px] md:h-[750px] rounded-full bg-[#0B0E26] z-10" />
 
-        <h1 className="font-serif text-4xl sm:text-5xl md:text-8xl font-semibold tracking-tight text-slate-800 mb-6 leading-tight max-w-4xl animate-slide-up">
-          Creating Stories <br className="hidden md:inline" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0033A0] via-[#0033A0]/90 to-[#FDB913] italic font-normal">
-            Through Visual
-          </span>
+        {/* Contour Lines inside the dark navy shape / bottom right */}
+        <ContourLines className="opacity-20 z-20" color="rgba(255, 255, 255, 0.15)" />
+
+        {/* Dot Grids on top left */}
+        <DotGrid className="absolute left-8 md:left-16 top-32 opacity-35 z-20" color="white" />
+        
+        {/* Subtle Watermark RTS text */}
+        <div className="absolute right-12 bottom-12 text-[100px] md:text-[180px] font-bold text-white/[0.02] tracking-wider select-none z-10 font-sans pointer-events-none">
+          RTS
+        </div>
+      </div>
+
+      {/* Hero Content Left-aligned */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full text-left flex flex-col items-start justify-center">
+        <span className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-[#F2B705] font-bold mb-6 block animate-fade-in">
+          RENCANA TUHAN STUDIO
+        </span>
+
+        <h1 className="font-serif text-4xl sm:text-6xl md:text-[5.5rem] font-bold tracking-tight text-white mb-6 leading-[1.05] max-w-4xl animate-slide-up">
+          We Create <br />
+          Visual <span className="text-[#F2B705]">Stories</span> <br />
+          That Inspire.
         </h1>
 
-        <p className="text-base md:text-xl text-slate-600 font-light tracking-wide max-w-2xl mb-12 leading-relaxed animate-slide-up [animation-delay:200ms]">
-          Kami meramu konsep, memproduksi visual, dan menyajikan karya sinematik kelas dunia untuk film, animasi, dan motion branding Anda.
+        <p className="text-sm md:text-base text-slate-300 font-light tracking-wide max-w-lg mb-10 leading-relaxed animate-slide-up [animation-delay:200ms]">
+          Rencana Tuhan Studio hadir untuk membantu ide menjadi karya visual yang bermakna.
         </p>
 
-        {/* Call to Actions */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full sm:w-auto animate-slide-up [animation-delay:400ms]">
+        {/* Call to Action Button from mockup */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-slide-up [animation-delay:400ms]">
           <a
             href="#portfolio"
-            className="group flex items-center justify-center space-x-3 w-full sm:w-auto bg-[#0033A0] text-white font-semibold tracking-wider text-sm px-8 py-4 rounded hover:bg-[#002D9C] transition-all duration-300 shadow-md hover:shadow-lg"
+            className="group flex items-center justify-center bg-[#F2B705] text-[#0B0E26] font-bold tracking-wider text-xs px-8 py-4 rounded hover:bg-[#d69f04] transition-all duration-300 shadow-md hover:shadow-lg w-full sm:w-auto"
           >
-            <Play className="w-4 h-4 fill-current group-hover:scale-110 transition-transform duration-300" />
-            <span>LIHAT KARYA</span>
-          </a>
-          <a
-            href="#calculator"
-            className="group flex items-center justify-center space-x-3 w-full sm:w-auto bg-white text-slate-700 font-semibold tracking-wider text-sm px-8 py-4 rounded border border-gray-200 hover:border-[#0033A0] hover:bg-gray-50 transition-all duration-300 shadow-sm"
-          >
-            <span>START PROJECT</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform duration-300 text-[#FDB913]" />
+            <span>Lihat Portfolio</span>
           </a>
         </div>
       </div>
 
-      {/* Decorative Bottom Fade */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#F9FAFB] to-transparent pointer-events-none" />
+      {/* Decorative Bottom Fade to light body bg */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#FCFDFE] to-transparent pointer-events-none z-0" />
     </section>
   );
 }

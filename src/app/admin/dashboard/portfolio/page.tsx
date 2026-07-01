@@ -167,9 +167,9 @@ export default function PortfolioManagementPage() {
 
         <button
           onClick={handleOpenAddModal}
-          className="flex items-center space-x-2 bg-[#0033A0] hover:bg-[#002D9C] text-white font-bold text-xs tracking-widest px-5 py-3 rounded transition-all duration-300 shadow-sm"
+          className="flex items-center space-x-2 bg-[#2F3A8F] hover:bg-[#1E255C] text-white font-bold text-xs tracking-widest px-5 py-3 rounded transition-all duration-300 shadow-sm"
         >
-          <Plus className="w-4 h-4 text-[#FDB913]" />
+          <Plus className="w-4 h-4 text-[#F2B705]" />
           <span>TAMBAH KARYA</span>
         </button>
       </div>
@@ -189,7 +189,7 @@ export default function PortfolioManagementPage() {
       {/* Portfolio Items Table/List */}
       {loading ? (
         <div className="h-64 flex items-center justify-center space-x-2 text-slate-500">
-          <RefreshCw className="w-5 h-5 animate-spin text-[#0033A0]" />
+          <RefreshCw className="w-5 h-5 animate-spin text-[#2F3A8F]" />
           <span>Memuat data portfolio...</span>
         </div>
       ) : filteredPortfolios.length === 0 ? (
@@ -210,7 +210,7 @@ export default function PortfolioManagementPage() {
                   className="w-full h-full object-cover opacity-80"
                 />
                 {item.featured && (
-                  <span className="absolute top-3 right-3 text-[9px] uppercase tracking-widest font-semibold bg-[#0033A0] text-white px-2 py-0.5 rounded shadow">
+                  <span className="absolute top-3 right-3 text-[9px] uppercase tracking-widest font-semibold bg-[#2F3A8F] text-white px-2 py-0.5 rounded shadow">
                     FEATURED
                   </span>
                 )}
@@ -221,7 +221,7 @@ export default function PortfolioManagementPage() {
 
               <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                 <div>
-                  <span className="text-[10px] tracking-widest uppercase font-bold text-[#0033A0]">
+                  <span className="text-[10px] tracking-widest uppercase font-bold text-[#2F3A8F]">
                     {item.category}
                   </span>
                   <h3 className="font-serif text-base font-bold text-slate-800 mt-1 line-clamp-1">
@@ -338,7 +338,7 @@ export default function PortfolioManagementPage() {
               {/* Thumbnail URL */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase tracking-wider text-slate-600 font-semibold flex items-center space-x-1">
-                  <Image size={12} className="text-[#0033A0]" />
+                  <Image size={12} className="text-[#2F3A8F]" />
                   <span>Link URL Thumbnail Gambar *</span>
                 </label>
                 <input
@@ -354,7 +354,7 @@ export default function PortfolioManagementPage() {
               {/* Video URL */}
               <div className="space-y-1.5">
                 <label className="text-[10px] uppercase tracking-wider text-slate-600 font-semibold flex items-center space-x-1">
-                  <Film size={12} className="text-[#0033A0]" />
+                  <Film size={12} className="text-[#2F3A8F]" />
                   <span>Link URL Showreel / Video *</span>
                 </label>
                 <input
@@ -392,7 +392,7 @@ export default function PortfolioManagementPage() {
                   id="featured"
                   checked={featuredInput}
                   onChange={(e) => setFeaturedInput(e.target.checked)}
-                  className="w-4.5 h-4.5 accent-[#0033A0] bg-white border-gray-200 rounded cursor-pointer"
+                  className="w-4.5 h-4.5 accent-[#2F3A8F] bg-white border-gray-200 rounded cursor-pointer"
                 />
                 <label htmlFor="featured" className="text-xs text-slate-700 font-semibold cursor-pointer selection:bg-transparent">
                   Tampilkan sebagai Karya Utama (Featured Project)
@@ -416,7 +416,7 @@ export default function PortfolioManagementPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="group flex items-center justify-center space-x-2 bg-[#0033A0] text-white font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-[#002D9C] transition-all duration-300 shadow-sm"
+                className="group flex items-center justify-center space-x-2 bg-[#2F3A8F] text-white font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-[#1E255C] transition-all duration-300 shadow-sm"
               >
                 {saving ? (
                   <>
@@ -425,7 +425,7 @@ export default function PortfolioManagementPage() {
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4 text-[#FDB913]" />
+                    <Check className="w-4 h-4 text-[#F2B705]" />
                     <span>SIMPAN KARYA</span>
                   </>
                 )}

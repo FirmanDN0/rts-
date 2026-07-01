@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Play, Film, Calendar, Eye } from 'lucide-react';
+import { DotGrid, ContourLines, OrganicBlob } from './Decorations';
 
 interface PortfolioItem {
   id: string;
@@ -51,12 +52,37 @@ export default function PortfolioGrid() {
   };
 
   return (
-    <section id="portfolio" className="py-24 bg-white border-t border-gray-100">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <section id="portfolio" className="py-24 bg-white relative overflow-hidden border-t border-slate-200/50">
+      {/* Background Patterns for Section Terang (Clean Light Style) */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Dot pattern base */}
+        <div className="absolute inset-0 bg-dot-pattern opacity-30" />
+        
+        {/* Contour lines flowing through the light space */}
+        <ContourLines className="opacity-[0.05]" color="#2F3A8F" />
+
+        {/* Soft Wave Curves matching Geometri Lembut & Shape Dinamis */}
+        {/* Bottom-left Blue Wave */}
+        <svg className="absolute left-0 bottom-0 w-[250px] h-[120px] md:w-[450px] md:h-[220px] text-[#2F3A8F]/15 pointer-events-none" viewBox="0 0 450 220" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 220V80C120 110 200 60 280 120C360 180 400 150 450 190V220H0Z" />
+        </svg>
+        
+        {/* Bottom-right Yellow Wave */}
+        <svg className="absolute right-0 bottom-0 w-[180px] h-[90px] md:w-[320px] md:h-[160px] text-[#F2B705]/20 pointer-events-none" viewBox="0 0 320 160" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M320 160V60C260 80 210 50 160 90C110 130 60 100 0 140V160H320Z" />
+        </svg>
+
+        {/* Dot pattern grid in the top-right corner */}
+        <DotGrid className="absolute right-12 top-12 opacity-20 text-[#2F3A8F]" color="currentColor" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
-          <div>
-            <span className="text-xs uppercase tracking-[0.3em] text-[#0033A0] font-bold mb-3 block">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 relative">
+          <div className="relative">
+            {/* Dot Grid accent behind header */}
+            <DotGrid className="absolute -left-4 -top-8 opacity-20 text-[#2F3A8F]" color="currentColor" />
+            <span className="text-xs uppercase tracking-[0.3em] text-[#2F3A8F] font-bold mb-3 block">
               PORTFOLIO SHOWCASE
             </span>
             <h2 className="font-serif text-4xl md:text-6xl font-semibold tracking-tight text-slate-800">
@@ -72,8 +98,8 @@ export default function PortfolioGrid() {
                 onClick={() => handleCategoryChange(cat)}
                 className={`text-[11px] uppercase tracking-widest font-semibold px-5 py-2.5 rounded transition-all duration-300 border ${
                   selectedCategory === cat
-                    ? 'bg-[#0033A0] text-white border-[#0033A0] hover:bg-[#002D9C]'
-                    : 'bg-transparent text-slate-500 border-gray-200 hover:border-slate-300 hover:text-slate-800'
+                    ? 'bg-[#2F3A8F] text-white border-[#2F3A8F] hover:bg-[#1E255C]'
+                    : 'bg-white text-slate-500 border-gray-200 hover:border-slate-300 hover:text-slate-800'
                 }`}
               >
                 {cat === 'All' ? 'SEMUA' : cat.toUpperCase()}
@@ -147,8 +173,8 @@ export default function PortfolioGrid() {
 
             {/* Project Info */}
             <div className="p-6 md:p-10">
-              <div className="flex flex-wrap items-center gap-4 mb-4 text-xs font-semibold text-[#0033A0] tracking-widest uppercase">
-                <span className="flex items-center space-x-1.5 bg-[#0033A0]/10 px-2.5 py-1 rounded">
+              <div className="flex flex-wrap items-center gap-4 mb-4 text-xs font-semibold text-[#2F3A8F] tracking-widest uppercase">
+                <span className="flex items-center space-x-1.5 bg-[#2F3A8F]/10 px-2.5 py-1 rounded">
                   <Film className="w-3.5 h-3.5" />
                   <span>{selectedProject.category}</span>
                 </span>
@@ -205,7 +231,7 @@ function PortfolioCard({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => onOpenModal(item)}
-      className="group relative bg-white border border-gray-100 rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-md hover:border-[#0033A0]/30 transition-all duration-500 flex flex-col"
+      className="group relative bg-white border border-slate-100 rounded-lg overflow-hidden cursor-pointer shadow-sm hover:shadow-md hover:border-[#2F3A8F]/30 transition-all duration-500 flex flex-col"
     >
       {/* Media Box */}
       <div className="aspect-video w-full overflow-hidden relative bg-black">
@@ -234,7 +260,7 @@ function PortfolioCard({
 
         {/* Play Button Overlay */}
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="p-4 rounded-full bg-[#0033A0] text-white shadow-lg transform scale-75 group-hover:scale-100 transition-transform duration-300">
+          <div className="p-4 rounded-full bg-[#2F3A8F] text-white shadow-lg transform scale-75 group-hover:scale-100 transition-transform duration-300">
             <Eye size={24} />
           </div>
         </div>
@@ -248,10 +274,10 @@ function PortfolioCard({
       {/* Info details */}
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
-          <span className="text-[10px] tracking-widest text-[#0033A0] uppercase font-bold block mb-2">
+          <span className="text-[10px] tracking-widest text-[#2F3A8F] uppercase font-bold block mb-2">
             {item.category}
           </span>
-          <h4 className="font-serif text-lg font-bold text-slate-800 group-hover:text-[#0033A0] transition-colors duration-300 line-clamp-1">
+          <h4 className="font-serif text-lg font-bold text-slate-800 group-hover:text-[#2F3A8F] transition-colors duration-300 line-clamp-1">
             {item.title}
           </h4>
           <p className="text-slate-500 text-xs mt-2 font-light line-clamp-2">

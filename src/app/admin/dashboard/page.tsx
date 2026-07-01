@@ -62,12 +62,12 @@ export default function DashboardOverviewPage() {
     fetchAnalytics();
   }, []);
 
-  const COLORS = ['#0033A0', '#FDB913', '#3B82F6', '#10B981', '#6366F1'];
+  const COLORS = ['#2F3A8F', '#F2B705', '#3B82F6', '#10B981', '#6366F1'];
 
   if (loading) {
     return (
       <div className="h-96 flex items-center justify-center space-x-2 text-slate-500">
-        <Loader2 className="w-6 h-6 animate-spin text-[#0033A0]" />
+        <Loader2 className="w-6 h-6 animate-spin text-[#2F3A8F]" />
         <span className="text-sm tracking-wider">Memuat data analitik...</span>
       </div>
     );
@@ -91,7 +91,7 @@ export default function DashboardOverviewPage() {
           disabled={refreshing}
           className="flex items-center space-x-2 text-xs uppercase tracking-widest font-semibold border border-gray-200 px-4 py-2.5 rounded bg-white hover:bg-gray-50 text-slate-700 hover:text-slate-900 shadow-sm transition-all disabled:opacity-50"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#0033A0]' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#2F3A8F]' : ''}`} />
           <span>REFRESH</span>
         </button>
       </div>
@@ -142,7 +142,7 @@ export default function DashboardOverviewPage() {
               </span>
               <span className="text-[10px] text-slate-400 block">Status Review/Nego/Approved</span>
             </div>
-            <div className="p-3 bg-amber-50 border border-amber-100 rounded-lg text-[#FDB913]">
+            <div className="p-3 bg-amber-50 border border-amber-100 rounded-lg text-[#F2B705]">
               <Activity className="w-6 h-6" />
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function DashboardOverviewPage() {
                     labelStyle={{ color: '#0F172A', fontWeight: 'bold' }}
                     formatter={(val: any) => [formatIDR(Number(val || 0)), 'Omzet']}
                   />
-                  <Bar dataKey="omzet" fill="#0033A0" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="omzet" fill="#2F3A8F" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -256,7 +256,7 @@ export default function DashboardOverviewPage() {
                     contentStyle={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 6, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
                     formatter={(val: any) => [val, 'Jumlah']}
                   />
-                  <Bar dataKey="value" fill="#0033A0" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="value" fill="#2F3A8F" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

@@ -148,7 +148,7 @@ export default function ConsultationsManagementPage() {
       case 'NEGOTIATION':
         return 'bg-purple-50 text-purple-600 border-purple-200';
       case 'APPROVED':
-        return 'bg-[#0033A0]/10 text-[#0033A0] border-[#0033A0]/20';
+        return 'bg-[#2F3A8F]/10 text-[#2F3A8F] border-[#2F3A8F]/20';
       case 'COMPLETED':
         return 'bg-emerald-50 text-emerald-600 border-emerald-200';
       default:
@@ -191,7 +191,7 @@ export default function ConsultationsManagementPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full md:w-44 glass-input px-3 py-2 text-sm focus:ring-1 focus:ring-[#0033A0] focus:border-[#0033A0]"
+            className="w-full md:w-44 glass-input px-3 py-2 text-sm focus:ring-1 focus:ring-[#2F3A8F] focus:border-[#2F3A8F]"
           >
             <option value="All">Semua Status</option>
             <option value="PENDING">PENDING</option>
@@ -206,7 +206,7 @@ export default function ConsultationsManagementPage() {
       {/* Table grid layout */}
       {loading ? (
         <div className="h-64 flex items-center justify-center space-x-2 text-slate-500">
-          <RefreshCw className="w-5 h-5 animate-spin text-[#0033A0]" />
+          <RefreshCw className="w-5 h-5 animate-spin text-[#2F3A8F]" />
           <span>Memuat data konsultasi...</span>
         </div>
       ) : filteredConsultations.length === 0 ? (
@@ -248,7 +248,7 @@ export default function ConsultationsManagementPage() {
                     </td>
                     <td className="p-4">
                       {item.negotiatedPrice ? (
-                        <span className="text-[#0033A0] font-bold">
+                        <span className="text-[#2F3A8F] font-bold">
                           {formatIDR(item.negotiatedPrice)}
                         </span>
                       ) : (
@@ -293,7 +293,7 @@ export default function ConsultationsManagementPage() {
             {/* Header */}
             <div className="bg-gray-50 border-b border-gray-200 px-6 py-4 flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
-                <span className="font-mono text-[#0033A0] font-bold tracking-widest">{selectedItem.trackingCode}</span>
+                <span className="font-mono text-[#2F3A8F] font-bold tracking-widest">{selectedItem.trackingCode}</span>
                 <span className="text-slate-350">•</span>
                 <span className="text-xs uppercase font-semibold text-slate-500">Detail & Update Status</span>
               </div>
@@ -312,11 +312,11 @@ export default function ConsultationsManagementPage() {
               {/* Client Info Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 border border-gray-200 p-4 rounded-lg text-xs font-light text-slate-600">
                 <div className="flex items-center space-x-2">
-                  <User size={14} className="text-[#0033A0]" />
+                  <User size={14} className="text-[#2F3A8F]" />
                   <span>Client: <strong className="text-slate-800">{selectedItem.clientName}</strong></span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Phone size={14} className="text-[#0033A0]" />
+                  <Phone size={14} className="text-[#2F3A8F]" />
                   <span>WhatsApp: <strong className="text-slate-800">{selectedItem.clientWhatsapp}</strong></span>
                 </div>
                 {selectedItem.clientEmail && (
@@ -345,7 +345,7 @@ export default function ConsultationsManagementPage() {
                     </span>
                     <div className="bg-white rounded border border-gray-200 p-3.5 space-y-2 text-[11px] font-normal text-slate-650">
                       {calc.category && (
-                        <div className="flex justify-between font-bold border-b border-gray-100 pb-1.5 text-[#0033A0]">
+                        <div className="flex justify-between font-bold border-b border-gray-100 pb-1.5 text-[#2F3A8F]">
                           <span>Kategori Kompleksitas Proyek:</span>
                           <span>{calc.category} ({calc.score} Poin)</span>
                         </div>
@@ -415,7 +415,7 @@ export default function ConsultationsManagementPage() {
                       {/* AI explanation */}
                       {calc.aiAnalysis && (
                         <div className="border-t border-gray-100 pt-2 mt-1">
-                          <span className="text-[9px] uppercase font-bold text-[#0033A0] block mb-1">Analisis AI:</span>
+                          <span className="text-[9px] uppercase font-bold text-[#2F3A8F] block mb-1">Analisis AI:</span>
                           <p className="text-[10px] text-slate-500 leading-relaxed font-light italic">
                             "{calc.aiAnalysis.explanation}"
                           </p>
@@ -448,7 +448,7 @@ export default function ConsultationsManagementPage() {
                   <select
                     value={statusInput}
                     onChange={(e) => setStatusInput(e.target.value)}
-                    className="w-full glass-input px-4 py-3 text-sm focus:ring-1 focus:ring-[#0033A0] focus:border-[#0033A0]"
+                    className="w-full glass-input px-4 py-3 text-sm focus:ring-1 focus:ring-[#2F3A8F] focus:border-[#2F3A8F]"
                   >
                     <option value="PENDING">PENDING (Awaiting Review)</option>
                     <option value="REVIEW">REVIEW (Analyzing)</option>
@@ -472,7 +472,7 @@ export default function ConsultationsManagementPage() {
                       value={negotiatedPriceInput}
                       onChange={(e) => setNegotiatedPriceInput(e.target.value)}
                       placeholder="Masukkan harga deal, e.g. 8500000"
-                      className="w-full glass-input pl-10 pr-4 py-3 text-sm font-semibold tracking-wide text-[#0033A0]"
+                      className="w-full glass-input pl-10 pr-4 py-3 text-sm font-semibold tracking-wide text-[#2F3A8F]"
                     />
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs font-semibold">
                       Rp
@@ -510,7 +510,7 @@ export default function ConsultationsManagementPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="group flex items-center justify-center space-x-2 bg-[#0033A0] text-white font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-[#002D9C] transition-all duration-300 shadow-sm"
+                className="group flex items-center justify-center space-x-2 bg-[#2F3A8F] text-white font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-[#1E255C] transition-all duration-300 shadow-sm"
               >
                 {saving ? (
                   <>
@@ -519,7 +519,7 @@ export default function ConsultationsManagementPage() {
                   </>
                 ) : (
                   <>
-                    <Save className="w-4 h-4 text-[#FDB913]" />
+                    <Save className="w-4 h-4 text-[#F2B705]" />
                     <span>SIMPAN PERUBAHAN</span>
                   </>
                 )}

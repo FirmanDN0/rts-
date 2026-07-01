@@ -27,19 +27,21 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        className={`fixed z-50 transition-all duration-500 left-1/2 -translate-x-1/2 ${
           isScrolled
-            ? 'py-4 bg-white/85 backdrop-blur-md border-b border-gray-200/50 shadow-sm'
-            : 'py-6 bg-transparent'
+            ? 'top-4 w-[92%] md:w-[95%] max-w-7xl py-3.5 bg-white/85 backdrop-blur-md border border-slate-200/60 rounded-full shadow-lg'
+            : 'top-0 w-full py-6 bg-transparent border-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="group flex items-center">
             <img
               src="/logo.png"
               alt="Rencana Tuhan Studio"
-              className="h-9 md:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+              className={`h-9 md:h-11 w-auto object-contain transition-all duration-300 group-hover:scale-[1.02] ${
+                isScrolled ? '' : 'brightness-0 invert'
+              }`}
             />
           </Link>
 
@@ -49,15 +51,25 @@ export default function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium tracking-wider text-slate-600 hover:text-[#0033A0] transition-colors duration-300 relative py-1 group"
+                className={`text-sm font-semibold tracking-wider transition-all duration-300 relative py-1 group ${
+                  isScrolled
+                    ? 'text-slate-600 hover:text-[#2F3A8F]'
+                    : 'text-white/80 hover:text-white'
+                }`}
               >
                 {link.name}
-                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#0033A0] transition-all duration-300 group-hover:w-full" />
+                <span className={`absolute bottom-0 left-0 w-0 h-[2px] transition-all duration-300 group-hover:w-full ${
+                  isScrolled ? 'bg-[#2F3A8F]' : 'bg-[#F2B705]'
+                }`} />
               </a>
             ))}
             <Link
               href="/admin"
-              className="text-[11px] uppercase tracking-widest text-slate-400 hover:text-[#0033A0] hover:border-[#0033A0] border border-gray-200 px-3 py-1.5 rounded transition-all duration-300"
+              className={`text-[11px] uppercase tracking-widest px-3 py-1.5 rounded transition-all duration-300 border ${
+                isScrolled
+                  ? 'text-slate-500 border-gray-200 hover:text-[#2F3A8F] hover:border-[#2F3A8F]'
+                  : 'text-white/60 border-white/20 hover:text-[#F2B705] hover:border-[#F2B705]'
+              }`}
             >
               Portal Admin
             </Link>
@@ -66,7 +78,11 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-slate-700 hover:text-[#0033A0] focus:outline-none"
+            className={`md:hidden p-2 transition-colors rounded focus:outline-none ${
+              isScrolled
+                ? 'text-slate-700 hover:text-[#2F3A8F]'
+                : 'text-white hover:text-[#F2B705]'
+            }`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -76,7 +92,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       <div
-        className={`fixed inset-0 z-40 bg-white flex flex-col justify-center px-8 transition-all duration-500 md:hidden ${
+        className={`fixed inset-0 z-40 bg-[#0B0E26] flex flex-col justify-center px-8 transition-all duration-500 md:hidden ${
           isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none invisible'
         }`}
       >
@@ -86,16 +102,16 @@ export default function Navbar() {
               key={link.name}
               href={link.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="flex items-center justify-center space-x-3 text-2xl font-serif tracking-widest text-slate-700 hover:text-[#0033A0] transition-colors py-2"
+              className="flex items-center justify-center space-x-3 text-2xl font-serif tracking-widest text-white/80 hover:text-[#F2B705] transition-colors py-2"
             >
-              <link.icon className="w-6 h-6 text-[#0033A0]/70" />
+              <link.icon className="w-6 h-6 text-[#F2B705]" />
               <span>{link.name}</span>
             </a>
           ))}
           <Link
             href="/admin"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="mt-8 text-sm uppercase tracking-widest text-slate-400 hover:text-[#0033A0] transition-all"
+            className="mt-8 text-sm uppercase tracking-widest text-slate-400 hover:text-[#F2B705] transition-all"
           >
             Portal Admin
           </Link>

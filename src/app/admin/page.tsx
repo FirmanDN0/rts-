@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-[#F9FAFB] flex flex-col justify-center pt-24 pb-12 px-6 lg:px-8 relative overflow-hidden">
       {/* Background radial accent */}
-      <div className="absolute inset-0 bg-radial-gradient from-[#0033A0]/5 via-transparent to-transparent opacity-20 pointer-events-none" />
+      <div className="absolute inset-0 bg-radial-gradient from-[#2F3A8F]/5 via-transparent to-transparent opacity-20 pointer-events-none" />
 
       {/* Back to Home Link */}
       <div className="absolute top-8 left-8">
@@ -51,7 +51,7 @@ export default function AdminLoginPage() {
           href="/"
           className="flex items-center space-x-2 text-xs uppercase tracking-widest text-slate-500 hover:text-slate-800 transition-colors"
         >
-          <ArrowLeft size={14} className="text-[#0033A0]" />
+          <ArrowLeft size={14} className="text-[#2F3A8F]" />
           <span>KEMBALI KE BERANDA</span>
         </Link>
       </div>
@@ -133,7 +133,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="group flex items-center justify-center space-x-2 w-full bg-[#0033A0] text-white font-bold text-xs tracking-widest py-3.5 rounded hover:bg-[#002D9C] transition-all duration-300 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group flex items-center justify-center space-x-2 w-full bg-[#2F3A8F] text-white font-bold text-xs tracking-widest py-3.5 rounded hover:bg-[#1E255C] transition-all duration-300 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>

@@ -168,9 +168,9 @@ export default function OffersManagementPage() {
 
         <button
           onClick={handleOpenAddModal}
-          className="flex items-center space-x-2 bg-[#0033A0] hover:bg-[#002D9C] text-white font-bold text-xs tracking-widest px-5 py-3 rounded transition-all duration-300 shadow-sm"
+          className="flex items-center space-x-2 bg-[#2F3A8F] hover:bg-[#1E255C] text-white font-bold text-xs tracking-widest px-5 py-3 rounded transition-all duration-300 shadow-sm"
         >
-          <Plus className="w-4 h-4 text-[#FDB913]" />
+          <Plus className="w-4 h-4 text-[#F2B705]" />
           <span>TAMBAH PENAWARAN</span>
         </button>
       </div>
@@ -190,7 +190,7 @@ export default function OffersManagementPage() {
       {/* Offers Grid list */}
       {loading ? (
         <div className="h-64 flex items-center justify-center space-x-2 text-slate-500">
-          <RefreshCw className="w-5 h-5 animate-spin text-[#0033A0]" />
+          <RefreshCw className="w-5 h-5 animate-spin text-[#2F3A8F]" />
           <span>Memuat data penawaran...</span>
         </div>
       ) : filteredOffers.length === 0 ? (
@@ -203,13 +203,13 @@ export default function OffersManagementPage() {
             <div
               key={item.id}
               className={`glass-panel border rounded-lg p-6 shadow-sm flex flex-col justify-between space-y-6 transition-colors duration-300 ${
-                item.isActive ? 'border-[#0033A0]/20 bg-[#0033A0]/[0.02]' : 'border-gray-200 bg-white'
+                item.isActive ? 'border-[#2F3A8F]/20 bg-[#2F3A8F]/[0.02]' : 'border-gray-200 bg-white'
               }`}
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-[#0033A0]">
-                    <Sparkles className="w-4 h-4 text-[#FDB913]" />
+                  <div className="flex items-center space-x-2 text-[#2F3A8F]">
+                    <Sparkles className="w-4 h-4 text-[#F2B705]" />
                     <span className="text-[10px] uppercase tracking-wider font-bold">PENAWARAN TERBARU</span>
                   </div>
                   {/* Active Toggle Button status */}
@@ -325,7 +325,7 @@ export default function OffersManagementPage() {
                   id="isActive"
                   checked={isActiveInput}
                   onChange={(e) => setIsActiveInput(e.target.checked)}
-                  className="w-4.5 h-4.5 accent-[#0033A0] bg-white border-gray-200 rounded cursor-pointer"
+                  className="w-4.5 h-4.5 accent-[#2F3A8F] bg-white border-gray-200 rounded cursor-pointer"
                 />
                 <label htmlFor="isActive" className="text-xs text-slate-700 font-semibold cursor-pointer selection:bg-transparent">
                   Aktifkan langsung di Beranda Utama
@@ -349,7 +349,7 @@ export default function OffersManagementPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="group flex items-center justify-center space-x-2 bg-[#0033A0] text-white font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-[#002D9C] transition-all duration-300 shadow-sm"
+                className="group flex items-center justify-center space-x-2 bg-[#2F3A8F] text-white font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-[#1E255C] transition-all duration-300 shadow-sm"
               >
                 {saving ? (
                   <>
@@ -358,7 +358,7 @@ export default function OffersManagementPage() {
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4 text-[#FDB913]" />
+                    <Check className="w-4 h-4 text-[#F2B705]" />
                     <span>SIMPAN PENAWARAN</span>
                   </>
                 )}

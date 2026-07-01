@@ -18,7 +18,7 @@ function SidebarLink({ href, label, icon: Icon, active }: SidebarLinkProps) {
       href={href}
       className={`flex items-center space-x-3.5 px-4 py-3 rounded-lg text-sm tracking-wide transition-all duration-300 ${
         active
-          ? 'bg-[#0033A0] text-white font-semibold shadow-sm'
+          ? 'bg-[#2F3A8F] text-white font-semibold shadow-sm'
           : 'text-slate-600 hover:bg-gray-100 hover:text-slate-800'
       }`}
     >
