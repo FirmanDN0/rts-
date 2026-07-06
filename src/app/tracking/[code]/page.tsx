@@ -72,33 +72,33 @@ Status Saat Ini: ${project.status}`;
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0B0E26] text-white flex flex-col items-center justify-center p-6 text-center">
-        <Compass className="w-12 h-12 text-[#F2B705] animate-spin mb-4" />
-        <p className="text-slate-450 tracking-wider text-sm">Menghubungkan ke RTS database...</p>
+      <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-6 text-center">
+        <Compass className="w-12 h-12 text-[#2F3A8F] animate-spin mb-4" />
+        <p className="text-slate-500 tracking-wider text-sm">Menghubungkan ke RTS database...</p>
       </div>
     );
   }
 
   if (error || !project) {
     return (
-      <div className="min-h-screen bg-[#0B0E26] text-white flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-red-950/40 border border-red-500/30 text-red-400 flex items-center justify-center mb-6">
+      <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-16 h-16 rounded-full bg-red-50 border border-red-200 text-red-600 flex items-center justify-center mb-6">
           <AlertCircle className="w-8 h-8" />
         </div>
-        <h2 className="font-serif text-2xl font-bold text-white mb-2">Project Tidak Ditemukan</h2>
-        <p className="text-slate-400 text-sm max-w-sm mb-8">
+        <h2 className="font-serif text-2xl font-bold text-slate-800 mb-2">Project Tidak Ditemukan</h2>
+        <p className="text-slate-500 text-sm max-w-sm mb-8">
           {error || 'Kode tracking tidak valid atau telah dihapus oleh administrator.'}
         </p>
         <div className="flex gap-4">
           <Link
             href="/tracking"
-            className="bg-[#F2B705] text-[#0B0E26] font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-[#d8a304] transition-colors shadow-md"
+            className="bg-[#2F3A8F] text-white font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-[#1E255C] transition-colors shadow-sm"
           >
             CARI KODE LAIN
           </Link>
           <Link
             href="/"
-            className="border border-white/10 text-slate-400 font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-white/5 transition-colors"
+            className="border border-gray-200 text-slate-600 font-bold text-xs tracking-widest px-6 py-3 rounded hover:bg-gray-50 transition-colors"
           >
             KEMBALI KE BERANDA
           </Link>
@@ -108,16 +108,16 @@ Status Saat Ini: ${project.status}`;
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0E26] text-white py-20 px-6 lg:px-8 relative">
-      <div className="absolute inset-0 bg-radial-gradient from-[#2F3A8F]/10 via-transparent to-transparent opacity-40 pointer-events-none" />
+    <div className="min-h-screen bg-[#F9FAFB] py-20 px-6 lg:px-8 relative">
+      <div className="absolute inset-0 bg-radial-gradient from-[#2F3A8F]/5 via-transparent to-transparent opacity-20 pointer-events-none" />
 
       {/* Header Link */}
       <div className="max-w-5xl mx-auto mb-10">
         <Link
           href="/tracking"
-          className="flex items-center space-x-2 text-xs uppercase tracking-widest text-slate-400 hover:text-white transition-colors"
+          className="flex items-center space-x-2 text-xs uppercase tracking-widest text-slate-500 hover:text-slate-800 transition-colors"
         >
-          <ArrowLeft size={14} className="text-[#F2B705]" />
+          <ArrowLeft size={14} className="text-[#2F3A8F]" />
           <span>CARI KODE LAIN</span>
         </Link>
       </div>
@@ -127,18 +127,18 @@ Status Saat Ini: ${project.status}`;
         {/* Left Column: Visual Status Timeline (2 cols span on lg) */}
         <div className="lg:col-span-2 space-y-8">
           {/* Card Wrapper */}
-          <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 p-8 md:p-10 rounded-xl shadow-2xl space-y-8">
+          <div className="glass-panel p-8 md:p-10 rounded-xl shadow-sm space-y-8 bg-white">
             <div>
-              <span className="text-[10px] uppercase tracking-[0.25em] text-[#F2B705] font-bold mb-2 block">
+              <span className="text-[10px] uppercase tracking-[0.25em] text-[#2F3A8F] font-bold mb-2 block">
                 TIMELINE STATUS PROJECT
               </span>
-              <h2 className="font-serif text-3xl font-bold text-white tracking-wide">
+              <h2 className="font-serif text-3xl font-bold text-slate-800 tracking-wide">
                 Progress Perkembangan
               </h2>
             </div>
 
             {/* Timeline Progress Line */}
-            <div className="relative pl-8 space-y-8 before:absolute before:top-2 before:left-3.5 before:w-px before:h-[90%] before:bg-slate-800">
+            <div className="relative pl-8 space-y-8 before:absolute before:top-2 before:left-3.5 before:w-px before:h-[90%] before:bg-gray-200">
               {stageDetails.map((stage, idx) => {
                 const isCompleted = idx < currentStageIndex;
                 const isActive = idx === currentStageIndex;
@@ -148,31 +148,31 @@ Status Saat Ini: ${project.status}`;
                     {/* Bullet marker */}
                     <div className="absolute -left-[30px] top-1">
                       {isCompleted ? (
-                        <CheckCircle2 className="w-5 h-5 text-[#F2B705] fill-[#0B0E26]" />
+                        <CheckCircle2 className="w-5 h-5 text-[#2F3A8F] fill-white" />
                       ) : isActive ? (
-                        <div className="w-5 h-5 rounded-full border-2 border-[#F2B705] bg-[#0B0E26] flex items-center justify-center">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#F2B705] animate-ping" />
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#F2B705] absolute" />
+                        <div className="w-5 h-5 rounded-full border-2 border-[#2F3A8F] bg-white flex items-center justify-center">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2F3A8F] animate-ping" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2F3A8F] absolute" />
                         </div>
                       ) : (
-                        <Circle className="w-5 h-5 text-slate-700 bg-[#0B0E26]" />
+                        <Circle className="w-5 h-5 text-gray-300 bg-white" />
                       )}
                     </div>
 
                     <h4
                       className={`text-sm uppercase tracking-wider font-bold ${
                         isActive
-                          ? 'text-[#F2B705]'
+                          ? 'text-[#2F3A8F]'
                           : isCompleted
-                          ? 'text-white'
-                          : 'text-slate-500'
+                          ? 'text-slate-800'
+                          : 'text-slate-400'
                       }`}
                     >
                       {stage.label}
                     </h4>
                     <p
                       className={`text-xs font-light leading-relaxed ${
-                        isActive || isCompleted ? 'text-slate-300' : 'text-slate-500'
+                        isActive || isCompleted ? 'text-slate-600' : 'text-slate-400'
                       }`}
                     >
                       {stage.desc}
@@ -188,31 +188,31 @@ Status Saat Ini: ${project.status}`;
         <div className="space-y-6">
           
           {/* Status Box */}
-          <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 p-6 rounded-xl shadow-2xl space-y-4">
-            <h4 className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
+          <div className="glass-panel p-6 rounded-xl shadow-sm space-y-4 bg-white">
+            <h4 className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">
               KODE & STATUS
             </h4>
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <span className="font-mono font-bold text-white tracking-widest uppercase">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <span className="font-mono font-bold text-slate-800 tracking-widest uppercase">
                 {project.trackingCode}
               </span>
-              <span className="text-[10px] uppercase tracking-widest font-bold bg-[#F2B705]/10 border border-[#F2B705]/20 text-[#F2B705] px-2.5 py-1 rounded">
+              <span className="text-[10px] uppercase tracking-widest font-bold bg-[#2F3A8F]/10 border border-[#2F3A8F]/20 text-[#2F3A8F] px-2.5 py-1 rounded">
                 {project.status}
               </span>
             </div>
 
             {/* Price Box */}
             <div className="space-y-1">
-              <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold block">
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold block">
                 {project.negotiatedPrice ? 'HARGA DISEPAKATI' : 'ESTIMASI ANGGARAN'}
               </span>
               {project.negotiatedPrice ? (
-                <div className="text-2xl font-bold text-[#F2B705] flex items-center space-x-1">
+                <div className="text-2xl font-bold text-[#2F3A8F] flex items-center space-x-1">
                   <DollarSign className="w-5 h-5 text-[#F2B705]" />
                   <span>{formatIDR(project.negotiatedPrice)}</span>
                 </div>
               ) : (
-                <span className="text-lg font-bold text-white">
+                <span className="text-lg font-bold text-slate-800">
                   {formatIDR(project.estimatedPriceMin)} — {formatIDR(project.estimatedPriceMax)}
                 </span>
               )}
@@ -220,9 +220,8 @@ Status Saat Ini: ${project.status}`;
 
             {/* Actions */}
             <button
-              type="button"
               onClick={handleWhatsAppChat}
-              className="w-full group flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs tracking-widest py-3 px-4 rounded transition-all duration-300 shadow-md cursor-pointer"
+              className="w-full group flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs tracking-widest py-3 px-4 rounded transition-all duration-300 shadow-md"
             >
               <MessageSquare className="w-4 h-4 fill-current" />
               <span>NEGOSIASI / TANYA WA</span>
@@ -230,41 +229,41 @@ Status Saat Ini: ${project.status}`;
           </div>
 
           {/* Configuration details */}
-          <div className="bg-slate-900/40 backdrop-blur-md border border-white/10 p-6 rounded-xl shadow-2xl space-y-4 text-xs font-light text-slate-300">
-            <h4 className="text-[10px] uppercase tracking-widest text-slate-400 font-bold border-b border-white/10 pb-2">
+          <div className="glass-panel p-6 rounded-xl shadow-sm space-y-4 text-xs font-light text-slate-600 bg-white">
+            <h4 className="text-[10px] uppercase tracking-widest text-slate-500 font-bold border-b border-gray-150 pb-2">
               RINCIAN KONSULTASI
             </h4>
             <div className="flex justify-between">
               <span>Client:</span>
-              <span className="text-white font-medium">{project.clientName}</span>
+              <span className="text-slate-800 font-medium">{project.clientName}</span>
             </div>
             <div className="flex justify-between">
               <span>Layanan:</span>
-              <span className="text-white font-medium">{project.serviceType}</span>
+              <span className="text-slate-800 font-medium">{project.serviceType}</span>
             </div>
             <div className="flex justify-between">
               <span>Durasi:</span>
-              <span className="text-white font-medium">{project.duration}</span>
+              <span className="text-slate-800 font-medium">{project.duration}</span>
             </div>
             <div className="flex justify-between">
               <span>Lokasi:</span>
-              <span className="text-white font-medium">{project.location}</span>
+              <span className="text-slate-800 font-medium">{project.location}</span>
             </div>
             <div className="flex justify-between">
               <span>Talent/Aktor:</span>
-              <span className="text-white font-medium">{project.talent ? 'Ya' : 'Tidak'}</span>
+              <span className="text-slate-800 font-medium">{project.talent ? 'Ya' : 'Tidak'}</span>
             </div>
             <div className="flex justify-between">
               <span>Gear Premium:</span>
-              <span className="text-white font-medium">{project.equipment ? 'Ya' : 'Tidak'}</span>
+              <span className="text-slate-800 font-medium">{project.equipment ? 'Ya' : 'Tidak'}</span>
             </div>
             
             {project.specialRequest && (
-              <div className="pt-2 border-t border-white/10 space-y-1">
-                <span className="block text-[10px] uppercase tracking-widest text-slate-400 font-bold">
+              <div className="pt-2 border-t border-gray-150 space-y-1">
+                <span className="block text-[10px] uppercase tracking-widest text-slate-500 font-bold">
                   Catatan Kebutuhan:
                 </span>
-                <p className="text-[11px] leading-relaxed italic bg-slate-950/60 border border-white/10 p-3 rounded text-slate-300">
+                <p className="text-[11px] leading-relaxed italic bg-gray-50 border border-gray-150 p-2 rounded text-slate-600">
                   "{project.specialRequest}"
                 </p>
               </div>
