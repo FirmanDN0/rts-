@@ -50,6 +50,27 @@ export default function PortfolioGrid() {
     }
   };
 
+  // Lock body scroll and listen for Escape key when modal is open
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedProject(null);
+      }
+    };
+
+    if (selectedProject) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedProject]);
+
   return (
     <section id="portfolio" className="py-24 bg-white border-t border-gray-100">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -109,20 +130,29 @@ export default function PortfolioGrid() {
 
       {/* Cinematic Project Modal */}
       {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in overflow-y-auto">
-          <div className="relative w-full max-w-5xl bg-white border border-gray-200 rounded-lg overflow-hidden shadow-2xl animate-scale-in my-8">
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedProject(null)}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white/70 hover:text-white hover:bg-black transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-black/85 backdrop-blur-md animate-fade-in"
+          onClick={() => setSelectedProject(null)}
+        >
+          {/* Fixed Screen-level Close Button (Always visible regardless of modal scroll height) */}
+          <button
+            onClick={() => setSelectedProject(null)}
+            className="fixed top-4 right-4 md:top-6 md:right-6 z-[60] p-3 rounded-full bg-slate-900/80 hover:bg-black text-white/80 hover:text-white backdrop-blur-md border border-white/20 shadow-2xl transition-all hover:scale-110 active:scale-95 group"
+            aria-label="Tutup modal"
+            title="Tutup (Esc)"
+          >
+            <svg className="w-6 h-6 transition-transform duration-300 group-hover:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
-            {/* Video Player */}
-            <div className="aspect-video w-full bg-black relative">
+          {/* Modal Container */}
+          <div
+            className="relative w-full max-w-6xl max-h-[90vh] md:max-h-[85vh] bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-2xl animate-scale-in flex flex-col md:flex-row"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Video Player Section */}
+            <div className="w-full md:w-3/5 lg:w-2/3 bg-black relative aspect-video md:aspect-auto flex-shrink-0 min-h-[240px] md:min-h-[420px] flex items-center justify-center">
               <iframe
                 src={selectedProject.videoUrl.includes('mixkit.co') 
                   ? undefined 
@@ -145,24 +175,40 @@ export default function PortfolioGrid() {
               )}
             </div>
 
-            {/* Project Info */}
-            <div className="p-6 md:p-10">
-              <div className="flex flex-wrap items-center gap-4 mb-4 text-xs font-semibold text-[#0033A0] tracking-widest uppercase">
-                <span className="flex items-center space-x-1.5 bg-[#0033A0]/10 px-2.5 py-1 rounded">
-                  <Film className="w-3.5 h-3.5" />
-                  <span>{selectedProject.category}</span>
-                </span>
-                <span className="flex items-center space-x-1.5 bg-gray-100 px-2.5 py-1 rounded text-slate-500">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>{selectedProject.year}</span>
-                </span>
+            {/* Project Info Panel */}
+            <div className="w-full md:w-2/5 lg:w-1/3 p-6 md:p-8 overflow-y-auto flex flex-col justify-between border-t md:border-t-0 md:border-l border-gray-100 bg-white text-slate-800">
+              <div>
+                <div className="flex flex-wrap items-center gap-2 mb-4 text-[11px] font-semibold tracking-wider uppercase">
+                  <span className="flex items-center space-x-1.5 bg-[#0033A0]/10 text-[#0033A0] px-3 py-1 rounded-full shadow-sm">
+                    <Film className="w-3.5 h-3.5" />
+                    <span>{selectedProject.category}</span>
+                  </span>
+                  <span className="flex items-center space-x-1.5 bg-gray-100 text-slate-500 px-3 py-1 rounded-full border border-gray-200">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>{selectedProject.year}</span>
+                  </span>
+                </div>
+
+                <h3 className="font-serif text-2xl md:text-3xl font-bold text-slate-800 mb-3 leading-snug">
+                  {selectedProject.title}
+                </h3>
+                
+                <div className="w-12 h-1 bg-[#0033A0] rounded mb-5" />
+
+                <p className="text-slate-600 leading-relaxed text-sm font-light whitespace-pre-line">
+                  {selectedProject.description}
+                </p>
               </div>
-              <h3 className="font-serif text-2xl md:text-3xl font-bold text-slate-800 mb-4">
-                {selectedProject.title}
-              </h3>
-              <p className="text-slate-600 leading-relaxed text-sm md:text-base font-light">
-                {selectedProject.description}
-              </p>
+
+              <div className="mt-8 pt-5 border-t border-gray-100 flex items-center justify-between text-xs text-slate-400">
+                <span className="font-medium tracking-wide text-slate-400">Rencana Tuhan Studio</span>
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="text-slate-500 hover:text-slate-900 transition-colors underline underline-offset-4"
+                >
+                  Tutup
+                </button>
+              </div>
             </div>
           </div>
         </div>
