@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Check, RefreshCw, X, Save, Image, Film } from 'lucide-react';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 
 interface Portfolio {
   id: string;
@@ -335,21 +336,14 @@ export default function PortfolioManagementPage() {
                 </div>
               </div>
 
-              {/* Thumbnail URL */}
-              <div className="space-y-1.5">
-                <label className="text-[10px] uppercase tracking-wider text-slate-600 font-semibold flex items-center space-x-1">
-                  <Image size={12} className="text-[#2F3A8F]" />
-                  <span>Link URL Thumbnail Gambar *</span>
-                </label>
-                <input
-                  type="url"
-                  required
-                  value={thumbnailInput}
-                  onChange={(e) => setThumbnailInput(e.target.value)}
-                  placeholder="Contoh: https://images.unsplash.com/photo-..."
-                  className="w-full glass-input px-4 py-2.5 text-slate-500 font-mono text-xs"
-                />
-              </div>
+              {/* Thumbnail Image Upload */}
+              <ImageUpload
+                value={thumbnailInput}
+                onChange={setThumbnailInput}
+                label="Thumbnail Gambar Karya"
+                folder="portfolio"
+                required
+              />
 
               {/* Video URL */}
               <div className="space-y-1.5">
@@ -358,7 +352,7 @@ export default function PortfolioManagementPage() {
                   <span>Link URL Showreel / Video *</span>
                 </label>
                 <input
-                  type="url"
+                  type="text"
                   required
                   value={videoInput}
                   onChange={(e) => setVideoInput(e.target.value)}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Settings2, Edit2, DollarSign, RefreshCw, X, Save } from 'lucide-react';
 import { formatIDR } from '@/lib/calculator';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 
 interface Service {
   id: string;
@@ -21,6 +22,7 @@ export default function ServicesManagementPage() {
   const [nameInput, setNameInput] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
   const [basePriceInput, setBasePriceInput] = useState('');
+  const [imageUrlInput, setImageUrlInput] = useState('');
   const [saving, setSaving] = useState(false);
 
   async function fetchServices() {
@@ -46,6 +48,7 @@ export default function ServicesManagementPage() {
     setNameInput(service.name);
     setDescriptionInput(service.description);
     setBasePriceInput(service.basePrice.toString());
+    setImageUrlInput(service.imageUrl || '');
   };
 
   const handleSaveChanges = async (e: React.FormEvent) => {
@@ -65,6 +68,7 @@ export default function ServicesManagementPage() {
           name: nameInput,
           description: descriptionInput,
           basePrice: parseFloat(basePriceInput),
+          imageUrl: imageUrlInput,
         }),
       });
 
@@ -213,6 +217,15 @@ export default function ServicesManagementPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Cover Image Upload */}
+              <ImageUpload
+                value={imageUrlInput}
+                onChange={setImageUrlInput}
+                label="Gambar Cover Layanan"
+                folder="services"
+                required
+              />
 
               {/* Description */}
               <div className="space-y-1.5">

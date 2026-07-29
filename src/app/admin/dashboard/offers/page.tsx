@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Check, RefreshCw, X, Save, Sparkles } from 'lucide-react';
+import { ImageUpload } from '@/components/admin/ImageUpload';
 
 interface Offer {
   id: string;
@@ -26,6 +27,7 @@ export default function OffersManagementPage() {
   // Form Fields
   const [titleInput, setTitleInput] = useState('');
   const [descriptionInput, setDescriptionInput] = useState('');
+  const [imageUrlInput, setImageUrlInput] = useState('');
   const [isActiveInput, setIsActiveInput] = useState(true);
 
   async function fetchOffers() {
@@ -69,6 +71,7 @@ export default function OffersManagementPage() {
     setSelectedItem(null);
     setTitleInput('');
     setDescriptionInput('');
+    setImageUrlInput('');
     setIsActiveInput(true);
   };
 
@@ -77,6 +80,7 @@ export default function OffersManagementPage() {
     setSelectedItem(item);
     setTitleInput(item.title);
     setDescriptionInput(item.description);
+    setImageUrlInput(item.imageUrl || '');
     setIsActiveInput(item.isActive);
   };
 
@@ -91,6 +95,7 @@ export default function OffersManagementPage() {
     const bodyData = {
       title: titleInput,
       description: descriptionInput,
+      imageUrl: imageUrlInput,
       isActive: isActiveInput,
     };
 
@@ -302,6 +307,14 @@ export default function OffersManagementPage() {
                   className="w-full glass-input px-4 py-2.5 text-sm"
                 />
               </div>
+
+              {/* Offer Banner Image Upload */}
+              <ImageUpload
+                value={imageUrlInput}
+                onChange={setImageUrlInput}
+                label="Gambar Banner / Illustrasi Promo (Opsional)"
+                folder="offers"
+              />
 
               {/* Description */}
               <div className="space-y-1.5">
