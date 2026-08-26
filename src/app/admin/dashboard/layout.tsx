@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, FileText, Briefcase, Settings2, Sparkles, LogOut, Menu, X, ArrowLeft, Coins } from 'lucide-react';
+import { LayoutDashboard, FileText, Briefcase, Settings2, Sparkles, LogOut, Menu, X, ArrowLeft, Coins, ShoppingBag } from 'lucide-react';
 
 interface SidebarLinkProps {
   href: string;
@@ -67,6 +67,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const menuItems = [
     { label: 'Overview', href: '/admin/dashboard', icon: LayoutDashboard },
     { label: 'Konsultasi Client', href: '/admin/dashboard/consultations', icon: FileText },
+    { label: 'Katalog Paket', href: '/admin/dashboard/catalog', icon: ShoppingBag },
     { label: 'Portfolio Works', href: '/admin/dashboard/portfolio', icon: Briefcase },
     { label: 'Harga Layanan', href: '/admin/dashboard/services', icon: Settings2 },
     { label: 'Smart Pricing System', href: '/admin/dashboard/pricing', icon: Coins },

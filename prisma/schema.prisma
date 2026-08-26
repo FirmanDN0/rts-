@@ -141,3 +141,27 @@ model ContentAssetPrice {
   updatedAt DateTime @updatedAt
 }
 
+model CatalogItem {
+  id             String   @id @default(uuid())
+  title          String
+  slug           String   @unique
+  category       String   // Film & Commercial, Animation, Motion Graphic, Content Asset, Production Gear
+  badge          String?  // BEST SELLER, POPULAR, ENTERPRISE, PROMO, FAST TRACK
+  thumbnailUrl   String
+  sampleVideoUrl String?
+  shortDesc      String
+  fullDesc       String
+  price          Float
+  priceUnit      String?  // e.g. "per project", "per video", "per paket", "per hari"
+  estimatedDays  String   // e.g. "5 - 7 Hari Kerja"
+  deliverables   String   // JSON stringified array of strings
+  gearSpecs      String?  // Equipment highlights
+  revisions      String?  // e.g. "2x Revisi Mayor, Unlimited Minor"
+  addonsJson     String?  // JSON stringified array of add-on objects [{ "name": "...", "price": 1000000 }]
+  isFeatured     Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
