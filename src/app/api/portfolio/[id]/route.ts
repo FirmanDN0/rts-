@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { checkAuth } from '@/lib/auth';
+import { deleteFromCloudinary } from '@/lib/cloudinary';
 
 // Protected PUT: Update a portfolio project
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -21,6 +22,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     if (!existing) {
       return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+    }
+
+    // If image was replaced with a new one, clean up old Cloudinary image
+    if (thumbnailUrl && existing.thumbnailUrl && thumbnailUrl !== existing.thumbnailUrl) {
+      await deleteFromCloudinary(existing.thumbnailUrl);
     }
 
     const updated = await db.portfolio.update({
@@ -59,6 +65,11 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     if (!existing) {
       return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+    }
+
+    // Automatically remove image from Cloudinary
+    if (existing.thumbnailUrl) {
+      await deleteFromCloudinary(existing.thumbnailUrl);
     }
 
     await db.portfolio.delete({

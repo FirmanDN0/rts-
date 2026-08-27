@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { checkAuth } from '@/lib/auth';
+import { deleteFromCloudinary } from '@/lib/cloudinary';
 
 // Public GET: Fetch all services
 export async function GET() {
@@ -36,6 +37,11 @@ export async function PUT(request: Request) {
 
     if (!existing) {
       return NextResponse.json({ error: 'Service not found' }, { status: 404 });
+    }
+
+    // If image was replaced with a new one, clean up old Cloudinary image
+    if (imageUrl && existing.imageUrl && imageUrl !== existing.imageUrl) {
+      await deleteFromCloudinary(existing.imageUrl);
     }
 
     const updated = await db.service.update({
