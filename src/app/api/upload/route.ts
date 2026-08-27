@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkAuth } from '@/lib/auth';
-import { getSupabaseClient } from '@/lib/supabase';
+import cloudinary from '@/lib/cloudinary';
+import { UploadApiResponse } from 'cloudinary';
 import fs from 'fs';
 import path from 'path';
 
@@ -27,65 +28,60 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check file size limit (5MB)
-    const MAX_SIZE_BYTES = 5 * 1024 * 1024;
+    // Check file size limit (10MB for Cloudinary)
+    const MAX_SIZE_BYTES = 10 * 1024 * 1024;
     if (file.size > MAX_SIZE_BYTES) {
       return NextResponse.json(
-        { error: 'Ukuran file gambar terlalu besar. Maksimal ukuran file adalah 5 MB.' },
+        { error: 'Ukuran file gambar terlalu besar. Maksimal ukuran file adalah 10 MB.' },
         { status: 400 }
       );
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const safeFilename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-    const filePath = `${folder}/${safeFilename}`;
 
-    // 1. Attempt upload to Supabase Storage
-    const supabase = getSupabaseClient();
-    if (supabase) {
-      const bucketName = 'rts-uploads';
-      
-      // Try uploading to Supabase Storage
-      let { data, error: uploadError } = await supabase.storage
-        .from(bucketName)
-        .upload(filePath, buffer, {
-          contentType: file.type,
-          upsert: true,
+    // 1. Attempt Cloudinary Upload if credentials exist
+    if (
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+    ) {
+      try {
+        const uploadResult = await new Promise<UploadApiResponse>((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder: `rts/${folder}`,
+              resource_type: 'auto',
+              transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+            },
+            (error, result) => {
+              if (error || !result) {
+                reject(error);
+              } else {
+                resolve(result);
+              }
+            }
+          );
+          uploadStream.end(buffer);
         });
 
-      // If bucket doesn't exist, attempt to create bucket then re-upload
-      if (uploadError && (uploadError.message?.includes('not found') || uploadError.message?.includes('Bucket'))) {
-        try {
-          await supabase.storage.createBucket(bucketName, { public: true });
-          const retry = await supabase.storage.from(bucketName).upload(filePath, buffer, {
-            contentType: file.type,
-            upsert: true,
-          });
-          data = retry.data;
-          uploadError = retry.error;
-        } catch (bucketErr) {
-          console.warn('Bucket creation attempt error:', bucketErr);
-        }
-      }
-
-      if (!uploadError && data) {
-        const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(filePath);
-        if (publicUrlData?.publicUrl) {
+        if (uploadResult?.secure_url) {
           return NextResponse.json({
-            url: publicUrlData.publicUrl,
+            url: uploadResult.secure_url,
             success: true,
-            storage: 'supabase',
+            storage: 'cloudinary',
+            public_id: uploadResult.public_id,
           });
         }
-      } else {
-        console.warn('Supabase storage upload notice:', uploadError?.message || uploadError);
+      } catch (cloudErr) {
+        console.error('Cloudinary upload error:', cloudErr);
       }
     }
 
-    // 2. Resilient Fallback: Local upload for dev or Base64 Data URL
+    // 2. Resilient Fallback: Local upload for dev
     if (process.env.NODE_ENV === 'development') {
       try {
+        const safeFilename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
         const publicUploadDir = path.join(process.cwd(), 'public', 'uploads', folder);
         if (!fs.existsSync(publicUploadDir)) {
           fs.mkdirSync(publicUploadDir, { recursive: true });
@@ -103,7 +99,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // Base64 fallback for small image preview/deployment fallback
+    // 3. Base64 fallback for preview
     const base64Data = buffer.toString('base64');
     const dataUrl = `data:${file.type};base64,${base64Data}`;
     return NextResponse.json({

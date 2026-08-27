@@ -1,5 +1,23 @@
+import fs from 'fs';
+import path from 'path';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+
+// Load .env manually for standalone script execution
+try {
+  const envPath = path.join(process.cwd(), '.env');
+  if (fs.existsSync(envPath)) {
+    const envConfig = fs.readFileSync(envPath, 'utf8');
+    envConfig.split('\n').forEach((line) => {
+      const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+      if (match) {
+        let value = match[2] || '';
+        if (value.startsWith('"') && value.endsWith('"')) value = value.slice(1, -1);
+        process.env[match[1]] = value;
+      }
+    });
+  }
+} catch (e) {}
 
 const prisma = new PrismaClient();
 
@@ -40,16 +58,13 @@ async function main() {
     },
   ];
 
-  await prisma.service.deleteMany();
   for (const s of servicesData) {
-    await prisma.service.create({
-      data: {
-        name: s.name,
-        description: s.description,
-        basePrice: s.basePrice,
-        imageUrl: s.imageUrl,
-      },
-    });
+    const existing = await prisma.service.findFirst({ where: { name: s.name } });
+    if (existing) {
+      await prisma.service.update({ where: { id: existing.id }, data: s });
+    } else {
+      await prisma.service.create({ data: s });
+    }
   }
   console.log('Services seeded successfully.');
 
@@ -102,9 +117,13 @@ async function main() {
     },
   ];
 
-  await prisma.portfolio.deleteMany(); // Clear old portfolios
   for (const p of portfoliosData) {
-    await prisma.portfolio.create({ data: p });
+    const existing = await prisma.portfolio.findFirst({ where: { title: p.title } });
+    if (existing) {
+      await prisma.portfolio.update({ where: { id: existing.id }, data: p });
+    } else {
+      await prisma.portfolio.create({ data: p });
+    }
   }
   console.log('Portfolios seeded successfully.');
 
@@ -122,16 +141,18 @@ async function main() {
     },
   ];
 
-  await prisma.offer.deleteMany(); // Clear old offers
   for (const o of offersData) {
-    await prisma.offer.create({ data: o });
+    const existing = await prisma.offer.findFirst({ where: { title: o.title } });
+    if (existing) {
+      await prisma.offer.update({ where: { id: existing.id }, data: o });
+    } else {
+      await prisma.offer.create({ data: o });
+    }
   }
   console.log('Offers seeded successfully.');
 
   // 5. Create Mock Consultations for Analytics Graph
-  // We want to create consultations distributed over several months in 2026 (Jan - Jun)
   const consultationsData = [
-    // June 2026
     {
       trackingCode: 'RTS-2026-X84B',
       clientName: 'Budi Santoso',
@@ -174,190 +195,108 @@ async function main() {
       clientWhatsapp: '083456789012',
       clientEmail: 'rian@visualcreative.id',
       serviceType: 'Creative Visual',
-      duration: 'Cepat',
-      location: 'Lokasi client',
+      duration: 'Singkat',
+      location: 'Studio RTS',
       talent: false,
       equipment: false,
-      specialRequest: 'Motion graphic logo & intro video YouTube, durasi 10 detik, deadline 3 hari.',
-      estimatedPriceMin: 6500000,
-      estimatedPriceMax: 8450000,
-      negotiatedPrice: null,
+      specialRequest: 'Motion graphic kinetic typography untuk rilis produk baru (3 varian durasi).',
+      estimatedPriceMin: 4000000,
+      estimatedPriceMax: 5200000,
+      negotiatedPrice: 4500000,
       status: 'PENDING',
-      notes: 'Menunggu review tim kreatif RTS untuk ketersediaan jadwal 3 hari.',
-      createdAt: new Date('2026-06-24T09:15:00Z'),
+      notes: 'Formulir konsultasi baru masuk via web.',
+      createdAt: new Date('2026-06-22T09:15:00Z'),
     },
     {
-      trackingCode: 'RTS-2026-K92P',
-      clientName: 'Dewi Lestari',
-      clientWhatsapp: '087654321098',
-      clientEmail: 'dewi.lestari@fashionbrand.com',
+      trackingCode: 'RTS-2026-K71P',
+      clientName: 'Dina Lestari',
+      clientWhatsapp: '084567890123',
+      clientEmail: 'dina@eventorganizer.com',
       serviceType: 'Film Production',
       duration: 'Normal',
-      location: 'Studio RTS',
-      talent: true,
+      location: 'Dalam kota',
+      talent: false,
       equipment: true,
-      specialRequest: 'Fashion lookbook video summer collection. Butuh model lokal dan outdoor set.',
-      estimatedPriceMin: 8500000,
-      estimatedPriceMax: 11050000,
-      negotiatedPrice: 10000000,
-      status: 'COMPLETED',
-      notes: 'Project selesai dengan hasil memuaskan. Client memberikan feedback bintang 5.',
-      createdAt: new Date('2026-06-02T11:00:00Z'),
+      specialRequest: 'Dokumentasi aftermovie konser jazz 2 hari.',
+      estimatedPriceMin: 8000000,
+      estimatedPriceMax: 10400000,
+      negotiatedPrice: 8500000,
+      status: 'APPROVED',
+      notes: 'DP 50% sudah diterima.',
+      createdAt: new Date('2026-05-10T16:00:00Z'),
     },
-
-    // May 2026
     {
-      trackingCode: 'RTS-2026-M82K',
-      clientName: 'Joko Widodo (Mock)',
-      clientWhatsapp: '081299998888',
-      clientEmail: 'joko@gmail.com',
+      trackingCode: 'RTS-2026-M42Q',
+      clientName: 'Hendra Gunawan',
+      clientWhatsapp: '085678901234',
+      clientEmail: 'hendra@techstartup.io',
       serviceType: 'Animation',
       duration: 'Kompleks',
       location: 'Studio RTS',
       talent: false,
       equipment: false,
-      specialRequest: 'Animasi edukasi 3D berdurasi 15 menit tentang sejarah nusantara.',
-      estimatedPriceMin: 14000000,
-      estimatedPriceMax: 18200000,
-      negotiatedPrice: 16000000,
-      status: 'COMPLETED',
-      notes: 'Animasi diselesaikan tepat waktu. File master diserahkan.',
-      createdAt: new Date('2026-05-10T16:00:00Z'),
+      specialRequest: 'Animasi 3D explain video fitur aplikasi fintech.',
+      estimatedPriceMin: 12000000,
+      estimatedPriceMax: 15600000,
+      negotiatedPrice: 13500000,
+      status: 'APPROVED',
+      notes: 'Sedang proses storyboard render.',
+      createdAt: new Date('2026-05-24T11:20:00Z'),
     },
     {
-      trackingCode: 'RTS-2026-A12X',
-      clientName: 'Amelia Putri',
-      clientWhatsapp: '085432109876',
-      clientEmail: 'amelia@cafecreative.id',
+      trackingCode: 'RTS-2026-L88R',
+      clientName: 'Maya Kusuma',
+      clientWhatsapp: '086789012345',
+      clientEmail: 'maya@culinarybrand.com',
       serviceType: 'Creative Visual',
       duration: 'Normal',
-      location: 'Lokasi client',
+      location: 'Studio RTS',
       talent: true,
-      equipment: false,
-      specialRequest: 'Pembuatan IG Reels branding menu baru cafe di Surabaya.',
+      equipment: true,
+      specialRequest: 'Foto produk makanan dan reel menu baru 10 items.',
       estimatedPriceMin: 6000000,
       estimatedPriceMax: 7800000,
-      negotiatedPrice: 6500000,
+      negotiatedPrice: 6000000,
       status: 'COMPLETED',
-      notes: 'Project selesai. Video reels sudah di-posting.',
-      createdAt: new Date('2026-05-18T08:22:00Z'),
+      notes: 'Final render sudah di-deliver ke klien via Google Drive.',
+      createdAt: new Date('2026-04-12T13:45:00Z'),
     },
     {
-      trackingCode: 'RTS-2026-R88N',
-      clientName: 'Rudi Hermawan',
-      clientWhatsapp: '087788990011',
-      clientEmail: 'rudi@tokomaju.com',
-      serviceType: 'Film Production',
-      duration: 'Cepat',
-      location: 'Studio RTS',
-      talent: false,
-      equipment: true,
-      specialRequest: 'Bumper video diskon lebaran.',
-      estimatedPriceMin: 9500000,
-      estimatedPriceMax: 12350000,
-      negotiatedPrice: 9500000,
-      status: 'APPROVED',
-      notes: 'Approved. DP 50% telah diterima.',
-      createdAt: new Date('2026-05-28T13:40:00Z'),
-    },
-
-    // April 2026
-    {
-      trackingCode: 'RTS-2026-D44J',
-      clientName: 'Daniel Christian',
-      clientWhatsapp: '081233445566',
-      clientEmail: 'daniel@startup.co',
-      serviceType: 'Animation',
-      duration: 'Normal',
-      location: 'Studio RTS',
-      talent: false,
-      equipment: false,
-      specialRequest: 'Explainer video landing page startup logistik.',
-      estimatedPriceMin: 7000000,
-      estimatedPriceMax: 9100000,
-      negotiatedPrice: 7500000,
-      status: 'COMPLETED',
-      notes: 'Revisi 2x dilakukan dan selesai.',
-      createdAt: new Date('2026-04-12T10:05:00Z'),
-    },
-    {
-      trackingCode: 'RTS-2026-Y22K',
-      clientName: 'Yusuf Mansur',
-      clientWhatsapp: '083322110099',
-      clientEmail: null,
+      trackingCode: 'RTS-2026-N23S',
+      clientName: 'Farhan Pratama',
+      clientWhatsapp: '087890123456',
+      clientEmail: 'farhan@automotive.id',
       serviceType: 'Film Production',
       duration: 'Kompleks',
       location: 'Luar kota',
       talent: true,
       equipment: true,
-      specialRequest: 'Aftermovie event festival musik jazz di Yogyakarta.',
-      estimatedPriceMin: 16000000,
-      estimatedPriceMax: 20800000,
-      negotiatedPrice: 19000000,
+      specialRequest: 'TV Commercial peluncuran motor sport baru.',
+      estimatedPriceMin: 20000000,
+      estimatedPriceMax: 26000000,
+      negotiatedPrice: 22500000,
       status: 'COMPLETED',
-      notes: 'Sukses diselesaikan. Video diunggah di YouTube official festival.',
-      createdAt: new Date('2026-04-22T15:30:00Z'),
-    },
-
-    // March 2026
-    {
-      trackingCode: 'RTS-2026-H77U',
-      clientName: 'Hendra Wijaya',
-      clientWhatsapp: '081122334455',
-      clientEmail: 'hendra@propertydev.com',
-      serviceType: 'Creative Visual',
-      duration: 'Kompleks',
-      location: 'Studio RTS',
-      talent: false,
-      equipment: true,
-      specialRequest: 'Visualisasi 3D rendering kompleks perumahan elite.',
-      estimatedPriceMin: 10500000,
-      estimatedPriceMax: 13650000,
-      negotiatedPrice: 11500000,
-      status: 'COMPLETED',
-      notes: 'Selesai. Client puas dengan detail render arsitektur.',
-      createdAt: new Date('2026-03-05T09:00:00Z'),
+      notes: 'Klien sangat puas, project closing invoice lunas.',
+      createdAt: new Date('2026-04-28T15:10:00Z'),
     },
     {
-      trackingCode: 'RTS-2026-G11P',
-      clientName: 'Gita Savitri',
-      clientWhatsapp: '082233445566',
-      clientEmail: 'gita@germany.de',
-      serviceType: 'Film Production',
+      trackingCode: 'RTS-2026-P55T',
+      clientName: 'Agus Setiawan',
+      clientWhatsapp: '088901234567',
+      clientEmail: 'agus@govagency.go.id',
+      serviceType: 'Animation',
       duration: 'Normal',
       location: 'Studio RTS',
       talent: false,
       equipment: false,
-      specialRequest: 'Dokumenter mini wawancara komunitas seni rupa.',
-      estimatedPriceMin: 5000000,
-      estimatedPriceMax: 6500000,
-      negotiatedPrice: 5000000,
+      specialRequest: 'Iklan layanan masyarakat animasi 2D tentang kesehatan.',
+      estimatedPriceMin: 7000000,
+      estimatedPriceMax: 9100000,
+      negotiatedPrice: 7500000,
       status: 'COMPLETED',
-      notes: 'Selesai tanpa kendala.',
-      createdAt: new Date('2026-03-18T14:20:00Z'),
+      notes: 'Laporan pertanggungjawaban selesai.',
+      createdAt: new Date('2026-03-05T09:00:00Z'),
     },
-
-    // February 2026
-    {
-      trackingCode: 'RTS-2026-F99O',
-      clientName: 'Ferry Salim',
-      clientWhatsapp: '085566778899',
-      clientEmail: 'ferry@agency.com',
-      serviceType: 'Animation',
-      duration: 'Cepat',
-      location: 'Studio RTS',
-      talent: false,
-      equipment: false,
-      specialRequest: 'Animasi aset game mobile 2D.',
-      estimatedPriceMin: 10500000,
-      estimatedPriceMax: 13650000,
-      negotiatedPrice: 12000000,
-      status: 'COMPLETED',
-      notes: 'Aset game diserahkan via cloud.',
-      createdAt: new Date('2026-02-14T11:50:00Z'),
-    },
-
-    // January 2026
     {
       trackingCode: 'RTS-2026-J02L',
       clientName: 'Julia Robert',
@@ -378,14 +317,16 @@ async function main() {
     }
   ];
 
-  await prisma.consultation.deleteMany(); // Clear old consultations
   for (const c of consultationsData) {
-    await prisma.consultation.create({ data: c });
+    await prisma.consultation.upsert({
+      where: { trackingCode: c.trackingCode },
+      update: c,
+      create: c,
+    });
   }
   console.log('Consultations seeded successfully.');
 
   // 6. Seed Equipment
-  await prisma.equipment.deleteMany();
   const equipmentData = [
     { name: 'Kamera SONY A6400', category: 'Kamera', provider: 'Favian', purchasePrice: 13000000, targetBep: 450, pricePerHour: 28889 },
     { name: 'Kamera ZV-E10', category: 'Kamera', provider: 'Rico', purchasePrice: 10000000, targetBep: 450, pricePerHour: 22222 },
@@ -400,13 +341,11 @@ async function main() {
     { name: 'Tripod Inbex', category: 'Tripod', provider: 'Rayyan', purchasePrice: 150000, targetBep: 50, pricePerHour: 3000 },
     { name: 'Mini Lighting', category: 'Lighting', provider: 'Favian', purchasePrice: 120000, targetBep: 50, pricePerHour: 2400 },
   ];
-  for (const eq of equipmentData) {
-    await prisma.equipment.create({ data: eq });
-  }
-  console.log('Equipment seeded.');
+
+  await prisma.equipment.createMany({ data: equipmentData, skipDuplicates: true });
+  console.log('Equipment seeded successfully.');
 
   // 7. Seed Labor
-  await prisma.labor.deleteMany();
   const laborData = [
     { role: 'Fotografer', priceRingan: 15000, priceMenengah: 40000, priceBesar: 90000, chargeRingan: 18000, chargeMenengah: 48000, chargeBesar: 108000 },
     { role: 'Videografer', priceRingan: 15000, priceMenengah: 55000, priceBesar: 100000, chargeRingan: 18000, chargeMenengah: 66000, chargeBesar: 120000 },
@@ -420,80 +359,63 @@ async function main() {
     { role: 'Admin', priceRingan: 20000, priceMenengah: 50000, priceBesar: 75000, chargeRingan: 24000, chargeMenengah: 60000, chargeBesar: 90000 },
     { role: 'Tenaga Pemateri', priceRingan: 100000, priceMenengah: 200000, priceBesar: 320000, chargeRingan: 120000, chargeMenengah: 240000, chargeBesar: 384000 },
   ];
-  for (const lab of laborData) {
-    await prisma.labor.create({ data: lab });
-  }
-  console.log('Labor seeded.');
+
+  await prisma.labor.createMany({ data: laborData, skipDuplicates: true });
+  console.log('Labor seeded successfully.');
 
   // 8. Seed Development Score Options
-  await prisma.developmentScoreOption.deleteMany();
   const scoreOptions = [
-    // Durasi Proyek
     { parameter: 'Durasi Proyek', optionLabel: '< 12 jam', score: 1 },
     { parameter: 'Durasi Proyek', optionLabel: '12 - 24 jam', score: 2 },
     { parameter: 'Durasi Proyek', optionLabel: '> 24 jam', score: 3 },
-    // Jumlah Output
     { parameter: 'Jumlah Output', optionLabel: '1 Output', score: 1 },
     { parameter: 'Jumlah Output', optionLabel: '2 Output', score: 2 },
     { parameter: 'Jumlah Output', optionLabel: '> 2 Output', score: 3 },
-    // Durasi Output
     { parameter: 'Durasi Output', optionLabel: '1-2 Menit', score: 1 },
     { parameter: 'Durasi Output', optionLabel: '2-3 Menit', score: 2 },
     { parameter: 'Durasi Output', optionLabel: '> 3 Menit', score: 3 },
-    // Kompleksitas Konsep
     { parameter: 'Kompleksitas Konsep', optionLabel: 'Simple/informatif', score: 1 },
     { parameter: 'Kompleksitas Konsep', optionLabel: 'Storyline + Visual planning', score: 2 },
     { parameter: 'Kompleksitas Konsep', optionLabel: 'Konsep naratif + riset', score: 3 },
-    // Kebutuhan Crew
     { parameter: 'Kebutuhan Crew', optionLabel: '1-2 orang', score: 1 },
     { parameter: 'Kebutuhan Crew', optionLabel: '3-4 orang', score: 2 },
     { parameter: 'Kebutuhan Crew', optionLabel: '> 4 orang', score: 3 },
-    // Tingkat Teknis
     { parameter: 'Tingkat Teknis', optionLabel: '1-3 alat', score: 1 },
     { parameter: 'Tingkat Teknis', optionLabel: '3-4 alat', score: 2 },
     { parameter: 'Tingkat Teknis', optionLabel: '> 4 alat', score: 3 },
-    // Rintangan Lokasi
     { parameter: 'Rintangan Lokasi', optionLabel: '1 lokasi', score: 1 },
     { parameter: 'Rintangan Lokasi', optionLabel: 'Beberapa lokasi', score: 3 },
-    // Tekanan Deadline
     { parameter: 'Tekanan Deadline', optionLabel: '> 14 hari', score: 1 },
     { parameter: 'Tekanan Deadline', optionLabel: '7-14 hari', score: 2 },
     { parameter: 'Tekanan Deadline', optionLabel: '< 7 hari', score: 3 },
-    // Person
     { parameter: 'Person', optionLabel: '1-20 orang', score: 1 },
     { parameter: 'Person', optionLabel: '20-50 orang', score: 2 },
     { parameter: 'Person', optionLabel: '> 50 orang', score: 3 },
   ];
-  for (const opt of scoreOptions) {
-    await prisma.developmentScoreOption.create({ data: opt });
-  }
-  console.log('Score options seeded.');
+
+  await prisma.developmentScoreOption.createMany({ data: scoreOptions, skipDuplicates: true });
+  console.log('Score options seeded successfully.');
 
   // 9. Seed Development Category
-  await prisma.developmentCategory.deleteMany();
   const devCategories = [
     { category: 'Proyek Ringan', minScore: 8, maxScore: 12, pricePerScore: 2000, profitPercentage: 0.10 },
     { category: 'Proyek Menengah', minScore: 13, maxScore: 18, pricePerScore: 5000, profitPercentage: 0.15 },
     { category: 'Proyek Besar', minScore: 19, maxScore: 24, pricePerScore: 10000, profitPercentage: 0.30 },
   ];
-  for (const cat of devCategories) {
-    await prisma.developmentCategory.create({ data: cat });
-  }
-  console.log('Development categories seeded.');
+
+  await prisma.developmentCategory.createMany({ data: devCategories, skipDuplicates: true });
+  console.log('Development categories seeded successfully.');
 
   // 10. Seed Variable Cost
-  await prisma.variableCost.deleteMany();
   const varCosts = [
     { name: 'Akomodasi Sidoarjo', price: 11000 },
     { name: 'Akomodasi Luar Sidoarjo', price: 30000 },
   ];
-  for (const vc of varCosts) {
-    await prisma.variableCost.create({ data: vc });
-  }
-  console.log('Variable costs seeded.');
+
+  await prisma.variableCost.createMany({ data: varCosts, skipDuplicates: true });
+  console.log('Variable costs seeded successfully.');
 
   // 11. Seed Content Asset Price
-  await prisma.contentAssetPrice.deleteMany();
   const assetPrices = [
     { category: 'Desain Grafis', name: 'Media Dokumen & Cetak Polos', priceMin: 2500, priceMax: 7500 },
     { category: 'Desain Grafis', name: 'Media Informasi & Promosi', priceMin: 5000, priceMax: 50000 },
@@ -506,300 +428,292 @@ async function main() {
     { category: 'Editing Video', name: 'Long-Form Video (Unique)', priceMin: 75000, priceMax: 500000 },
     { category: 'Editing Video', name: 'Commercial / Promotional Video', priceMin: 120000, priceMax: 1200000 },
   ];
-  for (const ap of assetPrices) {
-    await prisma.contentAssetPrice.create({ data: ap });
-  }
-  // 12. Seed Catalog Items
-  // @ts-ignore
-  if (prisma.catalogItem) {
-    // @ts-ignore
-    await prisma.catalogItem.deleteMany();
-    const catalogItemsData = [
-      {
-        title: 'Commercial Brand Film / TVC',
-        slug: 'commercial-brand-film-tvc',
-        category: 'Film & Commercial',
-        badge: 'BEST SELLER',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=800',
-        sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-man-walking-on-a-forest-path-41662-large.mp4',
-        shortDesc: 'Produksi video iklan komersial produk/brand berstandar sinematik tinggi untuk digital ads & campaign media sosial.',
-        fullDesc: 'Paket produksi komersial menyeluruh dirancang untuk menaikkan citra brand dan konversi penjualan. RTS menangani seluruh tahapan mulai dari perumusan treatment visual, naskah narasi, shooting dengan kamera bioskop 4K, hingga tata warna sinematik dan tata suara orisinil.',
-        price: 8500000,
-        priceUnit: 'per project',
-        estimatedDays: '7 - 10 Hari Kerja',
-        deliverables: JSON.stringify([
-          '1x Master Video 4K Cinematic (60-90 detik)',
-          '3x Cutdown Vertikal (15-30 detik untuk Reels/TikTok/Shorts)',
-          'Color Grading Sinematik High-End',
-          'Sound Design & Audio Mastering',
-          'Lisensi Musik Komersial Legal',
-          'Full High-Res Master Files (ProRes & MP4)',
-        ]),
-        gearSpecs: 'Cinema Camera 4K, Prime Lens Set, Wireless Audio Pro, Aputure Lighting Set, Gimbal Stabilizer',
-        revisions: '2x Revisi Mayor, Unlimited Minor',
-        addonsJson: JSON.stringify([
-          { name: 'Drone Aerial 4K Cinematography', price: 1200000 },
-          { name: 'Professional Voice Over Artist', price: 750000 },
-          { name: 'Talent / Model Casting (2 Orang)', price: 1500000 },
-          { name: 'Express Delivery (3 Hari Jadi)', price: 1800000 },
-        ]),
-        isFeatured: true,
-        isActive: true,
-        order: 1,
-      },
-      {
-        title: 'Cinematic Company Profile',
-        slug: 'cinematic-company-profile',
-        category: 'Film & Commercial',
-        badge: 'ENTERPRISE',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=800',
-        sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-background-1611-large.mp4',
-        shortDesc: 'Profil perusahaan visual sinematik untuk membangun kredibilitas, presentasi investor, dan branding korporat.',
-        fullDesc: 'Tampilkan identitas, visi misi, dan fasilitas perusahaan Anda secara megah dan profesional. Menggabungkan wawancara pimpinan, visual operasional dinamis, grafis infografis modern, serta tata suara sinematik.',
-        price: 12000000,
-        priceUnit: 'per project',
-        estimatedDays: '10 - 14 Hari Kerja',
-        deliverables: JSON.stringify([
-          '1x Master Video Profil 3-5 Menit (4K)',
-          'Scriptwriting & Storyboard Direction',
-          'Wawancara Direksi & Tim Kunci',
-          'Motion Graphic Infografis & Lower Thirds',
-          'Master Subtitle Bilingual (ID & EN)',
-          '1x Teaser Highlight 60 Detik',
-        ]),
-        gearSpecs: 'Multi-Camera 4K Setup, Boom & Lav Mic Wireless, Studio Key/Fill/Hair Lighting, Slider & Gimbal',
-        revisions: '3x Revisi Mayor, Unlimited Minor',
-        addonsJson: JSON.stringify([
-          { name: 'Drone Aerial 4K Cinematic Shot', price: 1200000 },
-          { name: 'Dokumentasi Foto High-Res 30 Foto Pilihan', price: 1500000 },
-          { name: 'Bilingual English Native Voice Over', price: 1200000 },
-        ]),
-        isFeatured: true,
-        isActive: true,
-        order: 2,
-      },
-      {
-        title: '3D Product Animation & Commercial',
-        slug: '3d-product-animation-commercial',
-        category: 'Animation',
-        badge: 'POPULAR',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=800',
-        sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-flying-abstract-spheres-31915-large.mp4',
-        shortDesc: 'Animasi 3D produk realistis dengan efek pencahayaan, raytracing, dan sudut dinamis tanpa batas fisik.',
-        fullDesc: 'Solusi ideal untuk menampilkan produk elektronik, fashion, kosmetik, botol/kemasan, dan manufaktur dengan visual fotorealistik mutakhir. Mampu memperlihatkan bagian dalam produk (X-ray/explode view) yang tidak bisa direkam kamera biasa.',
-        price: 9500000,
-        priceUnit: 'per video',
-        estimatedDays: '10 - 14 Hari Kerja',
-        deliverables: JSON.stringify([
-          '1x 3D Video Animasi Produk (30-60 detik 4K)',
-          '3D Modeling & Realistic Texturing Shader',
-          'Cinematic Lighting & Dynamic Camera Movements',
-          'Dynamic Particle & Physics Visual FX',
-          'Export format Horizontal (16:9) & Vertikal (9:16)',
-        ]),
-        gearSpecs: 'Blender & Cinema 4D Suite, Octane / Redshift Raytracing Renderer',
-        revisions: '2x Revisi Storyboard, 2x Revisi Final Render',
-        addonsJson: JSON.stringify([
-          { name: 'Custom 3D Environment / World Building', price: 2000000 },
-          { name: 'Tambahan 1 Varian Produk 3D', price: 1500000 },
-          { name: 'Fast Render Express Priority', price: 2000000 },
-        ]),
-        isFeatured: true,
-        isActive: true,
-        order: 3,
-      },
-      {
-        title: '2D Explainer & Storytelling Animation',
-        slug: '2d-explainer-storytelling-animation',
-        category: 'Animation',
-        badge: null,
-        thumbnailUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800',
-        sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-graphic-design-animation-of-colorful-shapes-31908-large.mp4',
-        shortDesc: 'Animasi 2D informatif dan engaging untuk edukasi layanan, aplikasi digital, campaign, atau presentasi SOP.',
-        fullDesc: 'Jelaskan konsep bisnis atau alur produk Anda dengan cara yang menyenangkan, mudah dipahami, dan berdaya ingat tinggi. Dilengkapi dengan ilustrasi kustom orisinil dan narasi suara profesional.',
-        price: 6500000,
-        priceUnit: 'per video',
-        estimatedDays: '7 - 10 Hari Kerja',
-        deliverables: JSON.stringify([
-          '1x 2D Explainer Video (Durasi hingga 60 detik)',
-          'Karakter Kustom & Scene Illustration Desain',
-          'Full Voice Over Bahasa Indonesia Profesional',
-          'Sound Effects & Background Music Berlisensi',
-          'Storyboard Sketsa & Draft Alur Lengkap',
-        ]),
-        gearSpecs: 'Adobe After Effects, Illustrator Vector Studio',
-        revisions: '2x Revisi Mayor (Naskah & Animasi)',
-        addonsJson: JSON.stringify([
-          { name: 'Tambahan Durasi +30 Detik', price: 1500000 },
-          { name: 'Karakter Maskot Kustom Tambahan', price: 800000 },
-          { name: 'Subtitle Bahasa Inggris (SRT)', price: 300000 },
-        ]),
-        isFeatured: false,
-        isActive: true,
-        order: 4,
-      },
-      {
-        title: 'Social Media Reels Growth Pack (10 Videos)',
-        slug: 'social-media-reels-growth-pack',
-        category: 'Motion Graphic',
-        badge: 'BEST SELLER',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800',
-        sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-graphic-design-animation-of-colorful-shapes-31908-large.mp4',
-        shortDesc: 'Paket editing 10 konten video pendek vertikal ber-pacing cepat untuk meledakkan reach di IG Reels & TikTok.',
-        fullDesc: 'Dioptimalkan untuk retensi audiens dengan hook di 3 detik awal, tipografi kinetik menarik, sound effects dinamis, dan grading warna modern. Cocok untuk brand, influencer, dan bisnis retail.',
-        price: 4500000,
-        priceUnit: 'per paket (10 video)',
-        estimatedDays: '5 - 7 Hari Kerja',
-        deliverables: JSON.stringify([
-          '10x Video Vertikal (15-60 detik 1080x1920)',
-          'Dynamic Kinetic Captions / Auto-Subtitles Menarik',
-          'Sound FX, B-Roll Integration & Trending Audio',
-          'Hook Optimization & Color Correction',
-          'Cover Thumbnail Eye-Catching untuk Setiap Video',
-        ]),
-        gearSpecs: 'Adobe Premiere Pro, After Effects Typography Module',
-        revisions: '1x Revisi per video',
-        addonsJson: JSON.stringify([
-          { name: 'Tambahan 5 Video (Total 15 Video)', price: 1800000 },
-          { name: 'Animasi Logo Intro/Outro Kustom', price: 600000 },
-        ]),
-        isFeatured: true,
-        isActive: true,
-        order: 5,
-      },
-      {
-        title: 'Dynamic Brand Motion & Kinetic Intro',
-        slug: 'dynamic-brand-motion-kinetic-intro',
-        category: 'Motion Graphic',
-        badge: 'FAST TRACK',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800',
-        sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-colorful-laser-lights-background-43093-large.mp4',
-        shortDesc: 'Animasi identitas visual dinamis, logo bumper, stinger intro, dan template gerak tipografi modern.',
-        fullDesc: 'Tingkatkan standar konten video YouTube, presentasi, dan event Anda dengan bumper animasi logo berkualitas studio. Menampilkan transisi mulus dengan efek audio yang berkarakter.',
-        price: 3500000,
-        priceUnit: 'per project',
-        estimatedDays: '3 - 5 Hari Kerja',
-        deliverables: JSON.stringify([
-          '1x Animasi Logo / Stinger Bumper (5-10 detik)',
-          '3x Motion Typography Template / Lower Thirds',
-          'Format Alpha Channel Transparan (ProRes 4444) & MP4',
-          'Sound FX Orisinil & Audio Mixing',
-        ]),
-        gearSpecs: 'Adobe After Effects & Cinema 4D Lite',
-        revisions: '2x Revisi',
-        addonsJson: JSON.stringify([
-          { name: '3D Extruded Metallic Logo Rendering', price: 1000000 },
-        ]),
-        isFeatured: false,
-        isActive: true,
-        order: 6,
-      },
-      {
-        title: 'Event Aftermovie & Cinematic Highlight',
-        slug: 'event-aftermovie-cinematic-highlight',
-        category: 'Film & Commercial',
-        badge: 'POPULAR',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800',
-        sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-background-1611-large.mp4',
-        shortDesc: 'Dokumentasi acara berformat film pendek untuk konser musik, konferensi korporat, gathering, dan festival.',
-        fullDesc: 'Abadikan kemeriahan, emosi, dan momen berharga acara Anda menjadi video aftermovie yang memukau. Tim videografer RTS siap menangkap momen terbaik dengan berbagai sudut kamera dan tata suara lapangan yang jernih.',
-        price: 7000000,
-        priceUnit: 'per event (1 hari)',
-        estimatedDays: '4 - 6 Hari Kerja',
-        deliverables: JSON.stringify([
-          '1x Master Aftermovie Sinematik (2-3 Menit 4K)',
-          '1x Teaser Highlight 60 Detik (Format Reels)',
-          '2 Orang Videografer Profesional di Lokasi',
-          'Perekaman Audio Multi-Track & Ambient Sound',
-          'Color Grading Sinematik Vibrant',
-        ]),
-        gearSpecs: '2x Cinema Camera 4K, DJI Ronin RS3 Pro Gimbal, Zoom Audio Recorder',
-        revisions: '2x Revisi Mayor',
-        addonsJson: JSON.stringify([
-          { name: 'Drone Operator on Location (4K Aerial)', price: 1200000 },
-          { name: 'Live Same-Day Edit (SDE) Highlight Reels', price: 1500000 },
-          { name: 'Dokumentasi Foto 50+ Edited Photos', price: 1200000 },
-        ]),
-        isFeatured: true,
-        isActive: true,
-        order: 7,
-      },
-      {
-        title: 'Brand Identity Visual Kit & Social Grid',
-        slug: 'brand-identity-visual-kit-social-grid',
-        category: 'Content Asset',
-        badge: null,
-        thumbnailUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800',
-        sampleVideoUrl: null,
-        shortDesc: 'Asset grafis visual, template feed media sosial, dan pedoman identitas estetika brand bisnis Anda.',
-        fullDesc: 'Rancangan visual lengkap yang konsisten dan menarik untuk feed Instagram, materi promosi banner, dan panduan palet warna agar brand Anda tampil terpercaya di mata audiens.',
-        price: 2800000,
-        priceUnit: 'per paket',
-        estimatedDays: '3 - 5 Hari Kerja',
-        deliverables: JSON.stringify([
-          '9x Instagram Feed Grid Visual Design (Puzzle/Carousel)',
-          '5x Instagram Story Template Siap Pakai',
-          'Brand Color Palette, Font Pairing & Guide PDF',
-          'File Master Vector (AI / PSD / Figma) & Export PNG/JPG',
-        ]),
-        gearSpecs: 'Adobe Photoshop, Illustrator, Figma Cloud',
-        revisions: '3x Revisi Desain',
-        addonsJson: JSON.stringify([
-          { name: 'Desain Poster Cetak High-Res Ukuran A1/A2', price: 500000 },
-          { name: 'Motion Graphic Animated Post (1 Postingan)', price: 600000 },
-        ]),
-        isFeatured: false,
-        isActive: true,
-        order: 8,
-      },
-      {
-        title: 'Cinema Gear & Crew Production Setup',
-        slug: 'cinema-gear-crew-production-setup',
-        category: 'Production Gear',
-        badge: 'ENTERPRISE',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800',
-        sampleVideoUrl: null,
-        shortDesc: 'Paket perlengkapan kamera bioskop, lensa, lighting pro, dan kru teknis RTS untuk kebutuhan shooting mandiri.',
-        fullDesc: 'Solusi lengkap bagi sutradara, agensi luar, atau production team yang membutuhkan kamera bioskop 4K, sistem monitor nirkabel, rig gimbal, dan operator asisten peralatan terlatih di area Surabaya dan sekitarnya.',
-        price: 3500000,
-        priceUnit: 'per shift (8 jam)',
-        estimatedDays: 'Sesuai Jadwal Shooting',
-        deliverables: JSON.stringify([
-          '1x Cinema Camera Body 4K 10-bit 4:2:2',
-          'Set Lensa Prime & Zoom Sinematik (16-35, 24-70, 85mm)',
-          'Wireless Video Transmitter & Wireless Director Monitor',
-          'DJI Ronin RS3 Pro Gimbal Setup & Follow Focus',
-          '1x Asisten Peralatan / Gaffer Teknis RTS di Lokasi',
-        ]),
-        gearSpecs: 'Sony 4K Cine, Hollyland Mars 4K, DJI Ronin RS3 Pro, V-Mount Batteries',
-        revisions: 'N/A (Layanan Operasional Peralatan)',
-        addonsJson: JSON.stringify([
-          { name: 'DJI Mavic Air 3 Drone + Pilot Bersertifikat', price: 1500000 },
-          { name: 'Aputure 300d II + Light Dome Studio Lighting', price: 800000 },
-          { name: 'Sound Recordist + Boom & Wireless Lav Mic', price: 900000 },
-        ]),
-        isFeatured: false,
-        isActive: true,
-        order: 9,
-      },
-    ];
 
-    for (const item of catalogItemsData) {
-      // @ts-ignore
-      await prisma.catalogItem.create({ data: item });
-    }
-    console.log('Catalog items seeded successfully.');
-  }
+  await prisma.contentAssetPrice.createMany({ data: assetPrices, skipDuplicates: true });
+  console.log('Content asset prices seeded successfully.');
+
+  // 12. Seed Catalog Items
+  const catalogItemsData = [
+    {
+      title: 'Commercial Brand Film / TVC',
+      slug: 'commercial-brand-film-tvc',
+      category: 'Film & Commercial',
+      badge: 'BEST SELLER',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=800',
+      sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-man-walking-on-a-forest-path-41662-large.mp4',
+      shortDesc: 'Produksi video iklan komersial produk/brand berstandar sinematik tinggi untuk digital ads & campaign media sosial.',
+      fullDesc: 'Paket produksi komersial menyeluruh dirancang untuk menaikkan citra brand dan konversi penjualan. RTS menangani seluruh tahapan mulai dari perumusan treatment visual, naskah narasi, shooting dengan kamera bioskop 4K, hingga tata warna sinematik dan tata suara orisinil.',
+      price: 8500000,
+      priceUnit: 'per project',
+      estimatedDays: '7 - 10 Hari Kerja',
+      deliverables: JSON.stringify([
+        '1x Master Video 4K Cinematic (60-90 detik)',
+        '3x Cutdown Vertikal (15-30 detik untuk Reels/TikTok/Shorts)',
+        'Color Grading Sinematik High-End',
+        'Sound Design & Audio Mastering',
+        'Lisensi Musik Komersial Legal',
+        'Full High-Res Master Files (ProRes & MP4)',
+      ]),
+      gearSpecs: 'Cinema Camera 4K, Prime Lens Set, Wireless Audio Pro, Aputure Lighting Set, Gimbal Stabilizer',
+      revisions: '2x Revisi Mayor, Unlimited Minor',
+      addonsJson: JSON.stringify([
+        { name: 'Drone Aerial 4K Cinematography', price: 1200000 },
+        { name: 'Professional Voice Over Artist', price: 750000 },
+        { name: 'Talent / Model Casting (2 Orang)', price: 1500000 },
+        { name: 'Express Delivery (3 Hari Jadi)', price: 1800000 },
+      ]),
+      isFeatured: true,
+      isActive: true,
+      order: 1,
+    },
+    {
+      title: 'Cinematic Company Profile',
+      slug: 'cinematic-company-profile',
+      category: 'Film & Commercial',
+      badge: 'ENTERPRISE',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=800',
+      sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-background-1611-large.mp4',
+      shortDesc: 'Profil perusahaan visual sinematik untuk membangun kredibilitas, presentasi investor, dan branding korporat.',
+      fullDesc: 'Tampilkan identitas, visi misi, dan fasilitas perusahaan Anda secara megah dan profesional. Menggabungkan wawancara pimpinan, visual operasional dinamis, grafis infografis modern, serta tata suara sinematik.',
+      price: 12000000,
+      priceUnit: 'per project',
+      estimatedDays: '10 - 14 Hari Kerja',
+      deliverables: JSON.stringify([
+        '1x Master Video Profil 3-5 Menit (4K)',
+        'Scriptwriting & Storyboard Direction',
+        'Wawancara Direksi & Tim Kunci',
+        'Motion Graphic Infografis & Lower Thirds',
+        'Master Subtitle Bilingual (ID & EN)',
+        '1x Teaser Highlight 60 Detik',
+      ]),
+      gearSpecs: 'Multi-Camera 4K Setup, Boom & Lav Mic Wireless, Studio Key/Fill/Hair Lighting, Slider & Gimbal',
+      revisions: '3x Revisi Mayor, Unlimited Minor',
+      addonsJson: JSON.stringify([
+        { name: 'Drone Aerial 4K Cinematic Shot', price: 1200000 },
+        { name: 'Dokumentasi Foto High-Res 30 Foto Pilihan', price: 1500000 },
+        { name: 'Bilingual English Native Voice Over', price: 1200000 },
+      ]),
+      isFeatured: true,
+      isActive: true,
+      order: 2,
+    },
+    {
+      title: '3D Product Animation & Commercial',
+      slug: '3d-product-animation-commercial',
+      category: 'Animation',
+      badge: 'POPULAR',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=800',
+      sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-flying-abstract-spheres-31915-large.mp4',
+      shortDesc: 'Animasi 3D produk realistis dengan efek pencahayaan, raytracing, dan sudut dinamis tanpa batas fisik.',
+      fullDesc: 'Solusi ideal untuk menampilkan produk elektronik, fashion, kosmetik, botol/kemasan, dan manufaktur dengan visual fotorealistik mutakhir. Mampu memperlihatkan bagian dalam produk (X-ray/explode view) yang tidak bisa direkam kamera biasa.',
+      price: 9500000,
+      priceUnit: 'per video',
+      estimatedDays: '10 - 14 Hari Kerja',
+      deliverables: JSON.stringify([
+        '1x 3D Video Animasi Produk (30-60 detik 4K)',
+        '3D Modeling & Realistic Texturing Shader',
+        'Cinematic Lighting & Dynamic Camera Movements',
+        'Dynamic Particle & Physics Visual FX',
+        'Export format Horizontal (16:9) & Vertikal (9:16)',
+      ]),
+      gearSpecs: 'Blender & Cinema 4D Suite, Octane / Redshift Raytracing Renderer',
+      revisions: '2x Revisi Storyboard, 2x Revisi Final Render',
+      addonsJson: JSON.stringify([
+        { name: 'Custom 3D Environment / World Building', price: 2000000 },
+        { name: 'Tambahan 1 Varian Produk 3D', price: 1500000 },
+        { name: 'Fast Render Express Priority', price: 2000000 },
+      ]),
+      isFeatured: true,
+      isActive: true,
+      order: 3,
+    },
+    {
+      title: '2D Explainer & Storytelling Animation',
+      slug: '2d-explainer-storytelling-animation',
+      category: 'Animation',
+      badge: null,
+      thumbnailUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800',
+      sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-graphic-design-animation-of-colorful-shapes-31908-large.mp4',
+      shortDesc: 'Animasi 2D informatif dan engaging untuk edukasi layanan, aplikasi digital, campaign, atau presentasi SOP.',
+      fullDesc: 'Jelaskan konsep bisnis atau alur produk Anda dengan cara yang menyenangkan, mudah dipahami, dan berdaya ingat tinggi. Dilengkapi dengan ilustrasi kustom orisinil dan narasi suara profesional.',
+      price: 6500000,
+      priceUnit: 'per video',
+      estimatedDays: '7 - 10 Hari Kerja',
+      deliverables: JSON.stringify([
+        '1x 2D Explainer Video (Durasi hingga 60 detik)',
+        'Karakter Kustom & Scene Illustration Desain',
+        'Full Voice Over Bahasa Indonesia Profesional',
+        'Sound Effects & Background Music Berlisensi',
+        'Storyboard Sketsa & Draft Alur Lengkap',
+      ]),
+      gearSpecs: 'Adobe After Effects, Illustrator Vector Studio',
+      revisions: '2x Revisi Mayor (Naskah & Animasi)',
+      addonsJson: JSON.stringify([
+        { name: 'Tambahan Durasi +30 Detik', price: 1500000 },
+        { name: 'Karakter Maskot Kustom Tambahan', price: 800000 },
+        { name: 'Subtitle Bahasa Inggris (SRT)', price: 300000 },
+      ]),
+      isFeatured: false,
+      isActive: true,
+      order: 4,
+    },
+    {
+      title: 'Social Media Reels Growth Pack (10 Videos)',
+      slug: 'social-media-reels-growth-pack',
+      category: 'Motion Graphic',
+      badge: 'BEST SELLER',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800',
+      sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-graphic-design-animation-of-colorful-shapes-31908-large.mp4',
+      shortDesc: 'Paket editing 10 konten video pendek vertikal ber-pacing cepat untuk meledakkan reach di IG Reels & TikTok.',
+      fullDesc: 'Dioptimalkan untuk retensi audiens dengan hook di 3 detik awal, tipografi kinetik menarik, sound effects dinamis, dan grading warna modern. Cocok untuk brand, influencer, dan bisnis retail.',
+      price: 4500000,
+      priceUnit: 'per paket (10 video)',
+      estimatedDays: '5 - 7 Hari Kerja',
+      deliverables: JSON.stringify([
+        '10x Video Vertikal (15-60 detik 1080x1920)',
+        'Dynamic Kinetic Captions / Auto-Subtitles Menarik',
+        'Sound FX, B-Roll Integration & Trending Audio',
+        'Hook Optimization & Color Correction',
+        'Cover Thumbnail Eye-Catching untuk Setiap Video',
+      ]),
+      gearSpecs: 'Adobe Premiere Pro, After Effects Typography Module',
+      revisions: '1x Revisi per video',
+      addonsJson: JSON.stringify([
+        { name: 'Tambahan 5 Video (Total 15 Video)', price: 1800000 },
+        { name: 'Animasi Logo Intro/Outro Kustom', price: 600000 },
+      ]),
+      isFeatured: true,
+      isActive: true,
+      order: 5,
+    },
+    {
+      title: 'Dynamic Brand Motion & Kinetic Intro',
+      slug: 'dynamic-brand-motion-kinetic-intro',
+      category: 'Motion Graphic',
+      badge: 'FAST TRACK',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800',
+      sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-colorful-laser-lights-background-43093-large.mp4',
+      shortDesc: 'Animasi identitas visual dinamis, logo bumper, stinger intro, dan template gerak tipografi modern.',
+      fullDesc: 'Tingkatkan standar konten video YouTube, presentasi, dan event Anda dengan bumper animasi logo berkualitas studio. Menampilkan transisi mulus dengan efek audio yang berkarakter.',
+      price: 3500000,
+      priceUnit: 'per project',
+      estimatedDays: '3 - 5 Hari Kerja',
+      deliverables: JSON.stringify([
+        '1x Animasi Logo / Stinger Bumper (5-10 detik)',
+        '3x Motion Typography Template / Lower Thirds',
+        'Format Alpha Channel Transparan (ProRes 4444) & MP4',
+        'Sound FX Orisinil & Audio Mixing',
+      ]),
+      gearSpecs: 'Adobe After Effects & Cinema 4D Lite',
+      revisions: '2x Revisi',
+      addonsJson: JSON.stringify([
+        { name: '3D Extruded Metallic Logo Rendering', price: 1000000 },
+      ]),
+      isFeatured: false,
+      isActive: true,
+      order: 6,
+    },
+    {
+      title: 'Event Aftermovie & Cinematic Highlight',
+      slug: 'event-aftermovie-cinematic-highlight',
+      category: 'Film & Commercial',
+      badge: 'POPULAR',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800',
+      sampleVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-background-1611-large.mp4',
+      shortDesc: 'Dokumentasi acara berformat film pendek untuk konser musik, konferensi korporat, gathering, dan festival.',
+      fullDesc: 'Abadikan kemeriahan, emosi, dan momen berharga acara Anda menjadi video aftermovie yang memukau. Tim videografer RTS siap menangkap momen terbaik dengan berbagai sudut kamera dan tata suara lapangan yang jernih.',
+      price: 7000000,
+      priceUnit: 'per event (1 hari)',
+      estimatedDays: '4 - 6 Hari Kerja',
+      deliverables: JSON.stringify([
+        '1x Master Aftermovie Sinematik (2-3 Menit 4K)',
+        '1x Teaser Highlight 60 Detik (Format Reels)',
+        '2 Orang Videografer Profesional di Lokasi',
+        'Perekaman Audio Multi-Track & Ambient Sound',
+        'Color Grading Sinematik Vibrant',
+      ]),
+      gearSpecs: '2x Cinema Camera 4K, DJI Ronin RS3 Pro Gimbal, Zoom Audio Recorder',
+      revisions: '2x Revisi Mayor',
+      addonsJson: JSON.stringify([
+        { name: 'Drone Operator on Location (4K Aerial)', price: 1200000 },
+        { name: 'Live Same-Day Edit (SDE) Highlight Reels', price: 1500000 },
+        { name: 'Dokumentasi Foto 50+ Edited Photos', price: 1200000 },
+      ]),
+      isFeatured: true,
+      isActive: true,
+      order: 7,
+    },
+    {
+      title: 'Brand Identity Visual Kit & Social Grid',
+      slug: 'brand-identity-visual-kit-social-grid',
+      category: 'Content Asset',
+      badge: null,
+      thumbnailUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800',
+      sampleVideoUrl: null,
+      shortDesc: 'Asset grafis visual, template feed media sosial, dan pedoman identitas estetika brand bisnis Anda.',
+      fullDesc: 'Rancangan visual lengkap yang konsisten dan menarik untuk feed Instagram, materi promosi banner, dan panduan palet warna agar brand Anda tampil terpercaya di mata audiens.',
+      price: 2800000,
+      priceUnit: 'per paket',
+      estimatedDays: '3 - 5 Hari Kerja',
+      deliverables: JSON.stringify([
+        '9x Instagram Feed Grid Visual Design (Puzzle/Carousel)',
+        '5x Instagram Story Template Siap Pakai',
+        'Brand Color Palette, Font Pairing & Guide PDF',
+        'File Master Vector (AI / PSD / Figma) & Export PNG/JPG',
+      ]),
+      gearSpecs: 'Adobe Photoshop, Illustrator, Figma Cloud',
+      revisions: '3x Revisi Desain',
+      addonsJson: JSON.stringify([
+        { name: 'Desain Poster Cetak High-Res Ukuran A1/A2', price: 500000 },
+        { name: 'Motion Graphic Animated Post (1 Postingan)', price: 600000 },
+      ]),
+      isFeatured: false,
+      isActive: true,
+      order: 8,
+    },
+    {
+      title: 'Cinema Gear & Crew Production Setup',
+      slug: 'cinema-gear-crew-production-setup',
+      category: 'Production Gear',
+      badge: 'ENTERPRISE',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800',
+      sampleVideoUrl: null,
+      shortDesc: 'Paket perlengkapan kamera bioskop, lensa, lighting pro, dan kru teknis RTS untuk kebutuhan shooting mandiri.',
+      fullDesc: 'Solusi lengkap bagi sutradara, agensi luar, atau production team yang membutuhkan kamera bioskop 4K, sistem monitor nirkabel, rig gimbal, dan operator asisten peralatan terlatih di area Surabaya dan sekitarnya.',
+      price: 3500000,
+      priceUnit: 'per shift (8 jam)',
+      estimatedDays: 'Sesuai Jadwal Shooting',
+      deliverables: JSON.stringify([
+        '1x Cinema Camera Body 4K 10-bit 4:2:2',
+        'Set Lensa Prime & Zoom Sinematik (16-35, 24-70, 85mm)',
+        'Wireless Video Transmitter & Wireless Director Monitor',
+        'DJI Ronin RS3 Pro Gimbal Setup & Follow Focus',
+        '1x Asisten Peralatan / Gaffer Teknis RTS di Lokasi',
+      ]),
+      gearSpecs: 'Sony 4K Cine, Hollyland Mars 4K, DJI Ronin RS3 Pro, V-Mount Batteries',
+      revisions: 'N/A (Layanan Operasional Peralatan)',
+      addonsJson: JSON.stringify([
+        { name: 'DJI Mavic Air 3 Drone + Pilot Bersertifikat', price: 1500000 },
+        { name: 'Aputure 300d II + Light Dome Studio Lighting', price: 800000 },
+        { name: 'Sound Recordist + Boom & Wireless Lav Mic', price: 900000 },
+      ]),
+      isFeatured: false,
+      isActive: true,
+      order: 9,
+    },
+  ];
+
+  await prisma.catalogItem.createMany({ data: catalogItemsData, skipDuplicates: true });
+  console.log('Catalog items seeded successfully.');
 
   console.log('Seeding completed successfully!');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('Seed Error:', e);
     process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
   });
-
